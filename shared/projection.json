@@ -1,0 +1,5 @@
+{
+  "WingsData": ["Make", "Model", "Size", "Cells", "Certification", "CertAllUp", "FlatAR", "FlatSpan", "FlatSurf", "Gliderwt", "ProjectedAR", "ProjectedSA", "ProjectedSpan", "HeightM", "RecAllUP", "RiserNum", "CertEN", "CertLtf", "certAUWmn", "certAUWmx", "RecAUWmn", "RecAUWmx", "Status", "RRP", "Wtype", "SoloTandem", "WBuild", "ShopURL"],
+  "ReservesData": ["Make", "Model", "Size", "Type", "Steerable", "Loadmin", "Loadmax", "Loadrange", "Area", "Opentime", "Sinkrate", "Weightmanu", "Volmin", "Volmax", "CertEN", "CertLTF", "Modelstatus", "Ourprice"],
+  "DSGeneric": ["Brand", "Model", "modelyear", "shopurl", "prodtype"]
+}

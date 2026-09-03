@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.openai
+.wrangler
+yarn.lock
+.env*
+!.env.example
+*.sql
+audit-report.json
+coverage
+outputs
+work
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
