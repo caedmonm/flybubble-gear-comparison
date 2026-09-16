@@ -51,7 +51,9 @@ DigitalOcean reference: [Node.js buildpack and runtime support](https://docs.dig
 python scripts/import-snapshot.py /path/to/export.sql
 ```
 
-The parser reads the export as text and never executes SQL. `shared/projection.json` is the authoritative table and column allowlist used by the importer and live API. Commit the resulting sanitized snapshot to update the offline fallback. `scripts/fetch-images.py` retrieves public product photos only from trusted Flybubble Shopify product URLs.
+The parser reads the export as text and never executes SQL. `shared/projection.json` is the authoritative table and column allowlist used by the importer and live API. Missing required tables or columns, or a mismatch with the export's declared row counts, stop the import before the snapshot is overwritten. Commit the resulting sanitized snapshot to update the offline fallback. `scripts/fetch-images.py` retrieves public product photos only from trusted Flybubble Shopify product URLs.
+
+The bundled snapshot uses `DataBe-PrimaryKeys.sql`: 1,228 wing sizes and 176 reserve sizes across 325 models. Its native primary keys and expanded text columns are compatible with the existing live queries. Product and size IDs remain based on category, brand, model, and size, so existing shortlist entries and comparison links retain their identifiers.
 
 ## Features and data caveats
 
@@ -68,8 +70,9 @@ The parser reads the export as text and never executes SQL. `shared/projection.j
 
 ```sh
 npm test
+python -m unittest discover -s tests -p "test_*.py"
 npm run typecheck
 npm run build
 ```
 
-Tests cover record preservation, unit conversion, same-size filter semantics, safe field projection, URL validation, redacted-password failure, and the snapshot catalogue service.
+Tests cover the updated catalogue, stable IDs across primary-key formats, record preservation, unit conversion, same-size filter semantics, safe field projection, URL validation, redacted-password failure, and the snapshot catalogue service. The Python importer tests use synthetic exports to check legacy and native keys, text columns, missing fields, and incomplete exports.

@@ -5,8 +5,6 @@ Never executes SQL and never exports customer, supplier or credential tables.
 import re
 from pathlib import Path
 
-ALLOWED = {'WingsData', 'ReservesData', 'DSGeneric'}
-
 def values(text):
     i, n = 0, len(text)
     while i < n:
@@ -43,17 +41,32 @@ def values(text):
             if end: break
         yield row
 
-def read_tables(path):
+def read_tables(path, projection):
     sql = Path(path).read_text(encoding='utf-8-sig')
     result = {}
-    for table in ALLOWED:
+    for table, fields in projection.items():
+        name = re.escape(table)
+        schema = re.search(r'CREATE TABLE `' + name + r'` \(([\s\S]*?)\) ENGINE=', sql)
+        if not schema:
+            raise ValueError(f'{table}: missing table definition')
+        columns = set(re.findall(r'^\s*`([^`]+)`', schema[1], re.M))
+        missing = set(fields) - columns
+        if missing:
+            raise ValueError(f'{table}: missing required columns: {", ".join(sorted(missing))}')
         records = []
         # Export batches end at COMMIT; quoted semicolons are not delimiters.
-        pattern = r'INSERT INTO `' + table + r'` \(([^\n]+)\) VALUES\s*\n([\s\S]*?);(?=\s*\n(?:COMMIT;|INSERT INTO|$))'
+        pattern = r'INSERT INTO `' + name + r'` \(([^\n]+)\) VALUES\s*\n([\s\S]*?);(?=\s*\n(?:COMMIT;|INSERT INTO|$))'
         for match in re.finditer(pattern, sql):
             columns = re.findall(r'`([^`]+)`', match[1])
+            missing = set(fields) - set(columns)
+            if missing:
+                raise ValueError(f'{table}: INSERT missing required columns: {", ".join(sorted(missing))}')
+            indexes = [(field, columns.index(field)) for field in fields]
             for row in values(match[2]):
                 if len(row) != len(columns): raise ValueError(f'{table}: column mismatch')
-                records.append(dict(zip(columns, row)))
+                records.append({field: row[index] for field, index in indexes})
+        expected = re.search(r'^-- Table: ' + name + r' \| Source rows: (\d+)\s*$', sql, re.M)
+        if expected and len(records) != int(expected[1]):
+            raise ValueError(f'{table}: expected {expected[1]} rows, parsed {len(records)}')
         result[table] = records
     return result

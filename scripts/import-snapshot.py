@@ -10,9 +10,7 @@ spec.loader.exec_module(parser)
 
 source = Path(sys.argv[1]) if len(sys.argv)>1 else ROOT.parent / 'DataBe-DigitalOcean-v2.sql'
 projection = json.loads((ROOT / 'shared/projection.json').read_text())
-parser.ALLOWED = set(projection)
-tables = parser.read_tables(source)
-public = {table: [{key: row.get(key) for key in fields} for row in tables[table]] for table, fields in projection.items()}
+public = parser.read_tables(source, projection)
 # DSGeneric contributes only model metadata for actual comparison records.
 keys = {(str(r['Make']).lower(),str(r['Model']).lower()) for t in ['WingsData','ReservesData'] for r in public[t]}
 public['DSGeneric'] = [r for r in public['DSGeneric'] if (str(r['Brand']).lower(),str(r['Model']).lower()) in keys]

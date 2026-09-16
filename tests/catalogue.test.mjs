@@ -9,9 +9,33 @@ import { createCatalogueService } from '../server/catalogue-service.mjs';
 const products=buildCatalogue(rows);
 
 test('all SQL size records survive grouping without duplicate IDs',()=>{
-  assert.equal(products.reduce((sum,p)=>sum+p.variants.length,0),1115);
+  assert.equal(rows.WingsData.length,1228);
+  assert.equal(rows.ReservesData.length,176);
+  assert.equal(products.length,325);
+  assert.equal(products.reduce((sum,p)=>sum+p.variants.length,0),1404);
   assert.equal(new Set(products.map(p=>p.id)).size,products.length);
   const ids=products.flatMap(p=>p.variants.map(v=>v.id));assert.equal(new Set(ids).size,ids.length);
+});
+test('native primary keys and reordered rows preserve shared product and size IDs',()=>{
+  const wing={Make:'Example',Model:'Wing',Size:'M',CertEN:'B',RRP:3000};
+  const reserve={Make:'Example',Model:'Reserve',Size:'100',Weightmanu:1200};
+  const legacy=buildCatalogue({WingsData:[{...wing,_access_row_id:1}],ReservesData:[{...reserve,_access_row_id:2}]});
+  const native=buildCatalogue({WingsData:[wing],ReservesData:[{...reserve,ID:999}]});
+  assert.deepEqual(native,legacy);
+  assert.equal(native.find(p=>p.category==='Wings').id,'wings%3Aexample%3Awing');
+  assert.equal(native.find(p=>p.category==='Wings').variants[0].id,'wings%3Aexample%3Awing%3Am');
+  const reversed=buildCatalogue(Object.fromEntries(Object.entries(rows).map(([table,records])=>[table,records.toReversed()])));
+  const ids=catalogue=>catalogue.flatMap(p=>p.variants.map(v=>v.id)).toSorted();
+  assert.deepEqual(ids(reversed),ids(products));
+});
+test('latest export includes added models and updated public specifications',()=>{
+  const added=products.find(p=>p.brand==='Bruce Goldsmith Design'&&p.model==='KISS 2');
+  assert.equal(added.variants.length,4);
+  const wing=products.find(p=>p.brand==='Advance'&&p.model==='SIGMA 12 DLS').variants.find(v=>v.size==='26');
+  assert.equal(wing.type,'Sports Paragliders');
+  assert.equal(wing.construction,'Standard');
+  const motor=products.find(p=>p.brand==='Bruce Goldsmith Design'&&p.model==='ADAM 2 MOTOR').variants.find(v=>v.size==='XS');
+  assert.equal(motor.price,2625);
 });
 test('reserve manufacturer weights are converted from grams to kg',()=>{
   const p=products.find(p=>p.brand==='Companion'&&p.model==='SQR Classic');
