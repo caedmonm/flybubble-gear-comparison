@@ -1,6 +1,6 @@
 {
   "WingsData": ["Make", "Model", "Size", "Cells", "Certification", "CertAllUp", "FlatAR", "FlatSpan", "FlatSurf", "Gliderwt", "ProjectedAR", "ProjectedSA", "ProjectedSpan", "HeightM", "RecAllUP", "RiserNum", "CertEN", "CertLtf", "CertDGAC", "certAUWmn", "certAUWmx", "RecAUWmn", "RecAUWmx", "Status", "Sell", "RRP", "Wtype", "SoloTandem", "WBuild", "ShopURL"],
-  "ReservesData": ["Make", "Model", "Size", "Type", "Steerable", "Loadmin", "Loadmax", "Loadrange", "Area", "Opentime", "Sinkrate", "Weightmanu", "Volmin", "Volmax", "CertEN", "CertLTF", "Modelstatus", "Ourprice"],
+  "ReservesData": ["Make", "Model", "Size", "Type", "Steerable", "Loadmin", "Loadmax", "Loadrange", "Area", "Opentime", "Sinkrate", "Weightmanu", "Volmin", "Volmax", "Volrange", "CertEN", "CertLTF", "Modelstatus", "Sell", "Ourprice", "FBPrice"],
   "DSGeneric": ["Brand", "Model", "modelyear", "shopurl", "prodtype"],
   "DSColours": ["Brand", "Model", "Colour"]
 }

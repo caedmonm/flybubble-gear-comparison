@@ -8,3 +8,17 @@ export type Variant = {
   sinkRate: number | null; openingTime: number | null; volumeMin: number | null; volumeMax: number | null; steerable: string | null;
 };
 export type Product = {id: string; brand: string; model: string; category: string; year: number | null; url: string | null; image: string | null; colours: string[]; variants: Variant[]};
+
+export type ReserveFilters = {
+  types: string[];
+  steerable: string;
+  allUpWeight: string;
+  loadPercent: number;
+  maxWeightGrams: string;
+  volumeMin: string;
+  volumeMax: string;
+  minArea: string;
+  loadMin: string;
+  loadMax: string;
+  maxPrice: string;
+};

@@ -39,7 +39,7 @@ test('latest export includes added models and updated public specifications',()=
 });
 test('reserve manufacturer weights are converted from grams to kg',()=>{
   const p=products.find(p=>p.brand==='Companion'&&p.model==='SQR Classic');
-  const v=p.variants.find(v=>v.size==='100');assert.equal(v.weight,1.258);assert.equal(v.maxLoad,100);assert.equal(v.price,679);
+  const v=p.variants.find(v=>v.size==='100');assert.equal(v.weight,1.258);assert.equal(v.maxLoad,100);assert.equal(v.price,659);
 });
 test('combined filters must match the same size, not different sizes',()=>{
   const p={id:'sample',category:'Wings',brand:'Test',model:'Wing',variants:[

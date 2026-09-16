@@ -105,7 +105,7 @@ export default function Comparison({products,open,onClose,sizes,onSize,onRemove}
   const fields:Field[]=[{key:'price',label:wings?'Recorded RRP (GBP)':'Recorded retail price (GBP)',value:v=>money(v.price)},...common,...(wings?wing:reserve)];
   const visible=fields.filter(field=>!differences||products.length===1||new Set(variants.map(field.value)).size>1);
   async function share(){
-    const url=new URL(window.location.href);url.search='';url.hash='';url.searchParams.set('selection',JSON.stringify(products.map((product,index)=>({id:product.id,size:variants[index].size}))));
+    const url=new URL(window.location.href);url.pathname=wings?'/wings':'/reserves';url.search='';url.hash='';url.searchParams.set('selection',JSON.stringify(products.map((product,index)=>({id:product.id,size:variants[index].size}))));
     try{await navigator.clipboard.writeText(url.href);setCopied(true);setTimeout(()=>setCopied(false),2500);}catch{setShareUrl(url.href);}
   }
   function exportCsv(){

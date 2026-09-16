@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import {
   ArrowDownUp,
@@ -25,6 +27,9 @@ import { NativeSelect } from '@/components/ui/native-select';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import Comparison from '@/components/comparison';
+import ReserveFilterControls, {
+  emptyReserveFilters,
+} from '@/components/reserve-filters';
 import { MultiSelectFilter, RangeFilter } from '@/components/filter-controls';
 
 import { ProductImage, money, spec } from '@/components/gear-ui';
@@ -39,14 +44,15 @@ import type { Product } from '@/shared/types';
 
 export default function Catalogue({
   initialProducts,
+  category,
 }: {
   initialProducts: Product[];
+  category: 'Wings' | 'Reserves';
 }) {
+  const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
 
   const [query, setQuery] = useState('');
-
-  const [category, setCategory] = useState('Wings');
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
@@ -58,6 +64,7 @@ export default function Catalogue({
   const [cellsRange, setCellsRange] = useState<number[] | null>(null);
   const [certScheme, setCertScheme] = useState('EN');
   const [wingMaxWeight, setWingMaxWeight] = useState('');
+  const [reserveFilters, setReserveFilters] = useState(emptyReserveFilters);
 
   const [cert, setCert] = useState('All');
 
@@ -68,7 +75,6 @@ export default function Catalogue({
   const [limit, setLimit] = useState(12);
 
   const [maxPrice, setMaxPrice] = useState(''),
-    [maxWeight, setMaxWeight] = useState(''),
     [allUpWeight, setAllUpWeight] = useState('');
 
   const [forSaleOnly, setForSaleOnly] = useState(false);
@@ -149,8 +155,15 @@ export default function Catalogue({
         );
 
         if (urlSelection && same.length) {
-          setCompareOpen(true);
-          setCategory(first!.category);
+          if (first!.category === category) {
+            setCompareOpen(true);
+          } else {
+            const path =
+              first!.category === 'Reserves' ? '/reserves' : '/wings';
+            router.replace(
+              `${path}?${new URLSearchParams({ selection: urlSelection })}`,
+            );
+          }
         }
       }
     } catch {
@@ -160,7 +173,7 @@ export default function Catalogue({
     setReady(true);
 
     return () => controller.abort();
-  }, [initialProducts]);
+  }, [initialProducts, category, router]);
 
   useEffect(() => {
     if (ready) {
@@ -190,7 +203,7 @@ export default function Catalogue({
       cert,
       category,
       maxPrice,
-      maxWeight,
+      reserveFilters,
       allUpWeight,
       modelStatus,
       forSaleOnly,
@@ -238,9 +251,10 @@ export default function Catalogue({
         sort,
         modelStatus,
         forSaleOnly,
-        maxPrice,
-        maxWeight: category === 'Wings' ? wingMaxWeight : maxWeight,
-        allUpWeight,
+        maxPrice: category === 'Wings' ? maxPrice : '',
+        maxWeight: category === 'Wings' ? wingMaxWeight : '',
+        allUpWeight: category === 'Wings' ? allUpWeight : '',
+        reserve: reserveFilters,
       }),
     [
       products,
@@ -259,7 +273,7 @@ export default function Catalogue({
       modelStatus,
       forSaleOnly,
       maxPrice,
-      maxWeight,
+      reserveFilters,
       allUpWeight,
     ],
   );
@@ -276,7 +290,7 @@ export default function Catalogue({
     setCert('All');
     setQuery('');
     setMaxPrice('');
-    setMaxWeight('');
+    setReserveFilters(emptyReserveFilters());
     setAllUpWeight('');
     setModelStatus('All');
     setForSaleOnly(false);
@@ -350,37 +364,29 @@ export default function Catalogue({
             </button>
           </div>
         )}
-        <div className="category-tabs">
-          <button
-            onClick={() => {
-              setCategory('Wings');
-              setSelectedBrands([]);
-              setCertScheme('EN');
-              setCert('All');
-            }}
+        <nav className="category-tabs" aria-label="Equipment categories">
+          <Link
+            href="/wings"
+            aria-current={category === 'Wings' ? 'page' : undefined}
             className={category === 'Wings' ? 'active' : ''}
           >
             <Wind size={20} /> Paragliding wings{' '}
             <span>{products.filter((p) => p.category === 'Wings').length}</span>
-          </button>
-          <button
-            onClick={() => {
-              setCategory('Reserves');
-              setSelectedBrands([]);
-              setCertScheme('EN');
-              setCert('All');
-            }}
+          </Link>
+          <Link
+            href="/reserves"
+            aria-current={category === 'Reserves' ? 'page' : undefined}
             className={category === 'Reserves' ? 'active' : ''}
           >
             <ShieldCheck size={19} /> Reserve parachutes{' '}
             <span>
               {products.filter((p) => p.category === 'Reserves').length}
             </span>
-          </button>
+          </Link>
           <div className="tabs-note">
             A clearer view of your next setup <ChevronRight size={15} />
           </div>
-        </div>
+        </nav>
 
         <div className="catalogue-layout">
           <aside className="filters">
@@ -478,41 +484,45 @@ export default function Catalogue({
                 </section>
               </>
             )}
-            <section className="advanced-filter">
-              <h3>All-up weight (kg)</h3>
-              <Input
-                aria-label="All-up flying weight in kilograms"
-                type="number"
-                min="1"
-                max="400"
-                placeholder="e.g. 90"
-                value={allUpWeight}
-                onChange={(e) => setAllUpWeight(e.target.value)}
+            {category === 'Reserves' && (
+              <ReserveFilterControls
+                value={reserveFilters}
+                onChange={setReserveFilters}
               />
-              <p className="filter-hint">
-                Pilot + wing + harness + all equipment. Matches the recorded
-                load range.
-              </p>
-            </section>
-            <section className="advanced-filter">
-              <h3>Maximum equipment weight</h3>
-              <NativeSelect
-                aria-label="Maximum equipment weight"
-                value={category === 'Wings' ? wingMaxWeight : maxWeight}
-                onChange={(event) =>
-                  (category === 'Wings' ? setWingMaxWeight : setMaxWeight)(event.target.value)
-                }
-              >
-                <option value="">Any weight</option>
-                {[1, 1.5, 2, 3, 4, 5, 6].map((w) => (
-                  <option key={w} value={w}>
-                    Up to {w} kg
-                  </option>
-                ))}
-              </NativeSelect>
-            </section>
+            )}
             {category === 'Wings' && (
               <>
+                <section className="advanced-filter">
+                  <h3>All-up weight (kg)</h3>
+                  <Input
+                    aria-label="All-up flying weight in kilograms"
+                    type="number"
+                    min="1"
+                    max="400"
+                    placeholder="e.g. 90"
+                    value={allUpWeight}
+                    onChange={(e) => setAllUpWeight(e.target.value)}
+                  />
+                  <p className="filter-hint">
+                    Pilot + wing + harness + all equipment. Matches the recorded
+                    load range.
+                  </p>
+                </section>
+                <section className="advanced-filter">
+                  <h3>Maximum equipment weight</h3>
+                  <NativeSelect
+                    aria-label="Maximum equipment weight"
+                    value={wingMaxWeight}
+                    onChange={(event) => setWingMaxWeight(event.target.value)}
+                  >
+                    <option value="">Any weight</option>
+                    {[1, 1.5, 2, 3, 4, 5, 6].map((w) => (
+                      <option key={w} value={w}>
+                        Up to {w} kg
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </section>
                 <RangeFilter
                   label="Flat surface"
                   unit="m²"
@@ -535,20 +545,20 @@ export default function Catalogue({
                   step={1}
                   onChange={setCellsRange}
                 />
+                <section className="advanced-filter">
+                  <h3>Maximum price (£)</h3>
+                  <Input
+                    aria-label="Maximum recorded price in pounds"
+                    type="number"
+                    min="1"
+                    step="100"
+                    placeholder="Any price (£)"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                  />
+                </section>
               </>
             )}
-            <section className="advanced-filter">
-              <h3>Maximum recorded price</h3>
-              <Input
-                aria-label="Maximum recorded price in pounds"
-                type="number"
-                min="1"
-                step="100"
-                placeholder="Any price (£)"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-              />
-            </section>
             <section>
               <h3>Model status</h3>
               <NativeSelect
@@ -561,15 +571,13 @@ export default function Catalogue({
                 <option value="Past model">Past</option>
               </NativeSelect>
             </section>
-            {category === 'Wings' && (
-              <label className="current-toggle for-sale-toggle">
-                <Checkbox
-                  checked={forSaleOnly}
-                  onCheckedChange={(value) => setForSaleOnly(!!value)}
-                />{' '}
-                For sale with Flybubble
-              </label>
-            )}
+            <label className="current-toggle for-sale-toggle">
+              <Checkbox
+                checked={forSaleOnly}
+                onCheckedChange={(value) => setForSaleOnly(!!value)}
+              />{' '}
+              Sold by Flybubble
+            </label>
             <div className="guide-card">
               <Mountain size={26} />
               <h3>
@@ -623,7 +631,12 @@ export default function Catalogue({
                 <strong>{filtered.length}</strong>{' '}
                 {category === 'Wings' ? 'wings' : 'reserves'} to explore{' '}
                 <span>
-                  · {modelStatus === 'All' ? 'All models' : modelStatus === 'Current' ? 'Current models' : 'Past models'}
+                  ·{' '}
+                  {modelStatus === 'All'
+                    ? 'All models'
+                    : modelStatus === 'Current'
+                      ? 'Current models'
+                      : 'Past models'}
                 </span>
               </p>
               <label className="sort-label">

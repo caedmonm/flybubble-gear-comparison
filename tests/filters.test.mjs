@@ -45,7 +45,7 @@ test('range bounds are inclusive and missing specifications only disappear for a
 
 test('wing-only filters never exclude reserves',()=>{
   const expected=filterCatalogue(products,{category:'Reserves'});
-  const actual=filterCatalogue(products,{category:'Reserves',forSaleOnly:true,sizes:['Nonexistent'],colours:['Nonexistent'],certScheme:'Other',cert:'CCC',areaRange:[0,1],aspectRatioRange:[1,2],cellsRange:[1,2]});
+  const actual=filterCatalogue(products,{category:'Reserves',sizes:['Nonexistent'],colours:['Nonexistent'],certScheme:'Other',cert:'CCC',areaRange:[0,1],aspectRatioRange:[1,2],cellsRange:[1,2]});
   assert.deepEqual(actual,expected);
 });
 

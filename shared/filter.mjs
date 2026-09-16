@@ -1,6 +1,37 @@
 // Every active specification filter must match the SAME size variant.
 const matchesAny = (values, value) => !values?.length || values.includes(value);
 const inRange = (value, range) => !range || (typeof value === 'number' && Number.isFinite(value) && value >= range[0] && value <= range[1]);
+const isSet = value => value !== '' && value != null;
+const isNumber = value => typeof value === 'number' && Number.isFinite(value);
+const atLeast = (value, limit) => !isSet(limit) || (isNumber(value) && value >= Number(limit));
+const atMost = (value, limit) => !isSet(limit) || (isNumber(value) && value <= Number(limit));
+
+export function reserveFilterError(filters = {}) {
+  for (const field of ['allUpWeight','maxWeightGrams','volumeMin','volumeMax','minArea','loadMin','loadMax','maxPrice']) {
+    if (isSet(filters[field]) && (!Number.isFinite(Number(filters[field])) || Number(filters[field]) < 0)) return 'Enter zero or a positive number for each limit.';
+  }
+  for (const [min, max, label] of [['volumeMin','volumeMax','Packed volume'],['loadMin','loadMax','Load']]) {
+    if (isSet(filters[min]) && isSet(filters[max]) && Number(filters[min]) > Number(filters[max])) return `${label} minimum must not exceed its maximum.`;
+  }
+  return '';
+}
+
+function matchesReserve(variant, filters = {}) {
+  if (reserveFilterError(filters)) return false;
+  const percent = Number(filters.loadPercent ?? 100);
+  return matchesAny(filters.types, variant.type) &&
+    (!filters.steerable || variant.steerable?.toLowerCase() === filters.steerable.toLowerCase()) &&
+    atMost(variant.minLoad, filters.allUpWeight) &&
+    atLeast(variant.maxLoad, filters.allUpWeight) &&
+    (!isSet(filters.allUpWeight) || ([90,95,100].includes(percent) && isNumber(variant.maxLoad) && Number(filters.allUpWeight) * 100 <= variant.maxLoad * percent + 1e-8)) &&
+    atMost(isNumber(variant.weight) ? Math.round(variant.weight * 1000) : null, filters.maxWeightGrams) &&
+    atLeast(variant.volumeMin, filters.volumeMin) &&
+    atMost(variant.volumeMax, filters.volumeMax) &&
+    atLeast(variant.area, filters.minArea) &&
+    atLeast(variant.minLoad, filters.loadMin) &&
+    atMost(variant.maxLoad, filters.loadMax) &&
+    atMost(variant.price, filters.maxPrice);
+}
 function specificationValue(product, variant, field) {
   // Known source decimal errors must not stretch the surface slider to 3,074 m².
   // Keep the original value for display; corrected source records work automatically.
@@ -19,8 +50,9 @@ function matchesCertification(variant, filters) {
 export function matchingVariants(product, filters = {}) {
   return product.variants.filter(v =>
     (!filters.modelStatus || filters.modelStatus === 'All' || v.status === filters.modelStatus) &&
+    (!filters.forSaleOnly || v.forSale === true) &&
+    (product.category !== 'Reserves' || matchesReserve(v, filters.reserve)) &&
     (product.category !== 'Wings' || (
-      (!filters.forSaleOnly || v.forSale === true) &&
       matchesCertification(v, filters) &&
       matchesAny(filters.sizes, v.size) &&
       inRange(specificationValue(product, v, 'area'), filters.areaRange) &&

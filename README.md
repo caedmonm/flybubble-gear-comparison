@@ -58,7 +58,10 @@ The bundled snapshot uses `DataBe-PrimaryKeys.sql`: 1,228 wing sizes and 176 res
 ## Features and data caveats
 
 - Search, category, multiple brands (wings and reserves), maximum price, equipment weight, and all-up weight filters.
-- Wings have a “For sale with Flybubble” filter based on the recorded `WingsData.Sell` flag. It is separate from the All / Current / Past model-status filter available for both wings and reserves. Model status defaults to All and the sale filter starts unchecked; Reset restores those defaults.
+- Wings and reserves have a “Sold by Flybubble” filter based on their recorded `Sell` flag. It is separate from the All / Current / Past model-status filter available for both categories. Model status defaults to All and the sale filter starts unchecked; Reset restores those defaults.
+- Reserve filters include multiple types, steerability, a single pilot AUW (as for wings), maximum equipment weight in grams, packed volume min/max in litres, minimum flat area, reserve load min/max, and one maximum-price budget. AUW must fit inside a single size’s load range; 90% / 95% / 100% caps AUW at that percentage of the reserve’s maximum load (default 100%, inactive without AUW). Load min requires `minLoad >= input`; load max requires `maxLoad <= input` to exclude oversized reserves.
+- Wings and reserves have separate routes at `/wings` and `/reserves`. The home route redirects to wings, and older comparison links retain their selected products and open the appropriate category. New comparison links use the category route.
+- A reserve’s full recorded volume range must fit inside the entered volume limits. Single recorded volumes use the same value for both endpoints. Published volumes are approximate; actual packed volume and harness compatibility must be checked. The Charly DIAMONDcross ST light 125 source volume of 4,700 cm³ is normalized to 4.7 L, as confirmed by the [manufacturer’s technical table](https://finsterwalder-charly.de/en/4-produkte/rettungsgeraete/673-charly-diamondcross-the-steerable-cruciform-canopy-video.html). Private purchase-cost fields are not included; “Cost Max” is treated as the customer’s price budget.
 - Wings also support multiple sizes and recorded colourways, EN/LTF classes, DGAC, and Other certification (CCC, Load Test Only, Uncertified), plus min–max sliders for flat surface, flat aspect ratio, and cell count.
 - Colourways come from `DSColours` at model level; they do not represent current stock or availability in a particular size. Missing certification is not treated as uncertified. Active specification ranges exclude missing values.
 - The surface filter excludes known source outliers above 100 m² for Skywalk ARAK AIR and MESCAL6. Their original values remain in product details; correcting these source values automatically restores surface filtering for those sizes.
@@ -67,7 +70,7 @@ The bundled snapshot uses `DataBe-PrimaryKeys.sql`: 1,228 wing sizes and 176 res
 - Open any product by itself to inspect its size-specific details and follow its Flybubble product link when available.
 - A device-local shortlist is stored in browser storage. Shared URLs include only public product identifiers and sizes.
 - “Current” means current in the supplied database; it is not verified live availability. Model years, recorded prices, and product images may be historical.
-- Wings use recorded RRP; reserves use the recorded retail field. Flybubble's current price may be lower.
+- Wings use recorded RRP; reserves prefer the recorded `FBPrice`, falling back to `Ourprice` when missing. These recorded prices are used consistently in filters, cards, comparison and price sorting. Live shop prices may differ.
 - This tool does not assess pilot suitability. Confirm certification, load ranges, and reserve compatibility with the manufacturer and a qualified professional.
 
 ## Validation

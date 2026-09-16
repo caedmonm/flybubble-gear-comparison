@@ -8,6 +8,14 @@ export function safeShopUrl(value) {
 }
 const key = (brand, model) => `${brand}:${model}`.toLowerCase();
 const id = (value) => encodeURIComponent(value.toLowerCase());
+function packedVolume(row) {
+  const range = clean(row.Volrange)?.match(/^(\d+(?:\.\d+)?)(?:\s*[-–]\s*(\d+(?:\.\d+)?))?$/);
+  const values = [number(row.Volmin) ?? number(range?.[1]), number(row.Volmax) ?? number(range?.[2] || range?.[1])];
+  // This source record uses cm³. Manufacturer lists 4,700 ccm for the ST 125:
+  // https://finsterwalder-charly.de/en/4-produkte/rettungsgeraete/673-charly-diamondcross-the-steerable-cruciform-canopy-video.html
+  if (row.Make === 'Charly' && row.Model === 'DIAMONDcross ST light' && String(row.Size) === '125') return values.map(value => value === 4700 ? 4.7 : value);
+  return values;
+}
 export function buildCatalogue(tables, images = {}) {
   const metadata = new Map((tables.DSGeneric || []).map(r => [key(r.Brand,r.Model),r]));
   const colours = new Map();
@@ -32,6 +40,7 @@ export function buildCatalogue(tables, images = {}) {
         colours:reserve ? [] : [...(colours.get(key(row.Make,row.Model)) || [])].sort((a,b)=>a.localeCompare(b)), variants:[],
       });
       const product = groups.get(groupKey);
+      const [volumeMin, volumeMax] = reserve ? packedVolume(row) : [null, null];
       const certification = clean(reserve ? row.CertEN : row.CertEN || row.Certification);
       // Mixed EN ratings such as A / B must not be simplified to a single class.
       const certClass = !reserve && certification?.match(/^(?:(?:LTF\/EN|EN\/LTF|EN)[\s/-]*)?([ABCD])(?:[*+])?(?:\s*\/\s*LTF\s*[ABCD])?$/i)?.[1]?.toUpperCase() || null;
@@ -49,9 +58,9 @@ export function buildCatalogue(tables, images = {}) {
       product.variants.push({
         id:id(`${groupKey}:${row.Size || 'one-size'}`),size:clean(row.Size) || 'One size',
         status:clean(reserve ? row.Modelstatus : row.Status)?.toLowerCase() === 'current' ? 'Current' : 'Past model',
-        forSale:!reserve && clean(row.Sell)?.toUpperCase() === 'Y',
+        forSale:/^(?:y|yes)$/i.test(clean(row.Sell) || ''),
         certification,certClass,ltf,ltfClass,dgac,otherCertifications,
-        price:number(reserve ? row.Ourprice : row.RRP),
+        price:reserve ? number(row.FBPrice) ?? number(row.Ourprice) : number(row.RRP),
         weight:reserve ? number(number(row.Weightmanu) ? Number(row.Weightmanu)/1000 : null) : number(row.Gliderwt),
         minLoad:number(reserve ? row.Loadmin : row.certAUWmn),maxLoad:number(reserve ? row.Loadmax : row.certAUWmx),
         loadRange:clean(reserve ? row.Loadrange : row.CertAllUp),
@@ -60,7 +69,7 @@ export function buildCatalogue(tables, images = {}) {
         projectedArea:number(row.ProjectedSA),projectedAspectRatio:number(row.ProjectedAR),projectedSpan:number(row.ProjectedSpan),cells:number(row.Cells),
         construction:clean(row.WBuild),type:clean(reserve ? row.Type : row.Wtype),
         risers:clean(row.RiserNum),sinkRate:number(row.Sinkrate),openingTime:number(row.Opentime),
-        volumeMin:number(row.Volmin),volumeMax:number(row.Volmax),steerable:clean(row.Steerable),
+        volumeMin,volumeMax,steerable:clean(row.Steerable),
       });
     }
   }
