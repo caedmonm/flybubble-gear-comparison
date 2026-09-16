@@ -1,0 +1,40 @@
+import type { ReserveFilters } from '@/shared/types';
+
+export type CatalogueFilterProps = {
+  brands: string[];
+  selectedBrands: string[];
+  filterSizes: string[];
+  colours: string[];
+  certScheme: string;
+  cert: string;
+  allUpWeight: string;
+  wingMaxWeight: string;
+  maxPrice: string;
+  modelStatus: string;
+  forSaleOnly: boolean;
+  areaRange: number[] | null;
+  aspectRatioRange: number[] | null;
+  cellsRange: number[] | null;
+  wingOptions: {
+    sizes: string[];
+    colours: string[];
+    area: number[] | null;
+    aspectRatio: number[] | null;
+    cells: number[] | null;
+  };
+  setSelectedBrands: (value: string[]) => void;
+  setFilterSizes: (value: string[]) => void;
+  setColours: (value: string[]) => void;
+  setCertScheme: (value: string) => void;
+  setCert: (value: string) => void;
+  setAllUpWeight: (value: string) => void;
+  setWingMaxWeight: (value: string) => void;
+  setMaxPrice: (value: string) => void;
+  setModelStatus: (value: string) => void;
+  setForSaleOnly: (value: boolean) => void;
+  setAreaRange: (value: number[] | null) => void;
+  setAspectRatioRange: (value: number[] | null) => void;
+  setCellsRange: (value: number[] | null) => void;
+  reserveFilters: ReserveFilters;
+  setReserveFilters: (value: ReserveFilters) => void;
+};

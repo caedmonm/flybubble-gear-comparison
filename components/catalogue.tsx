@@ -24,13 +24,9 @@ import { Input } from '@/components/ui/input';
 
 import { NativeSelect } from '@/components/ui/native-select';
 
-import { Checkbox } from '@/components/ui/checkbox';
-
 import Comparison from '@/components/comparison';
-import ReserveFilterControls, {
-  emptyReserveFilters,
-} from '@/components/reserve-filters';
-import { MultiSelectFilter, RangeFilter } from '@/components/filter-controls';
+import CatalogueFilters from '@/components/catalogue-filters';
+import { emptyReserveFilters } from '@/components/catalogue-filters/reserve-state';
 
 import { ProductImage, money, spec } from '@/components/gear-ui';
 
@@ -336,7 +332,7 @@ export default function Catalogue({
   return (
     <>
       <main id="catalogue" className="workspace">
-        <div className="intro">
+        {/* <div className="intro">
           <div>
             <div className="eyebrow">THE GEAR FINDER</div>
             <h1>
@@ -354,7 +350,7 @@ export default function Catalogue({
               : 'SQL catalogue snapshot'}
             <small>Prices and availability may have changed</small>
           </div>
-        </div>
+        </div> */}
 
         {notice && (
           <div className="notice" role="status">
@@ -383,9 +379,7 @@ export default function Catalogue({
               {products.filter((p) => p.category === 'Reserves').length}
             </span>
           </Link>
-          <div className="tabs-note">
-            A clearer view of your next setup <ChevronRight size={15} />
-          </div>
+          
         </nav>
 
         <div className="catalogue-layout">
@@ -396,188 +390,39 @@ export default function Catalogue({
               </h2>
               <button onClick={reset}>Reset</button>
             </div>
-            <section>
-              <h3>Brand</h3>
-              <MultiSelectFilter
-                label="Brands"
-                options={brands}
-                value={selectedBrands}
-                onChange={setSelectedBrands}
-                placeholder="All brands"
-              />
-            </section>
-            {category === 'Wings' && (
-              <>
-                <section>
-                  <h3>Sizes</h3>
-                  <MultiSelectFilter
-                    label="Sizes"
-                    options={wingOptions.sizes}
-                    value={filterSizes}
-                    onChange={setFilterSizes}
-                    placeholder="All sizes"
-                  />
-                </section>
-                <section>
-                  <h3>Colours</h3>
-                  <MultiSelectFilter
-                    label="Colours"
-                    options={wingOptions.colours}
-                    value={colours}
-                    onChange={setColours}
-                    placeholder="All colours"
-                  />
-                </section>
-                <section className="certification-filter">
-                  <h3>Certification</h3>
-                  <fieldset
-                    className="cert-options cert-schemes"
-                    aria-label="Certification scheme"
-                  >
-                    {['EN', 'LTF', 'DGAC', 'Other'].map((scheme) => (
-                      <button
-                        key={scheme}
-                        aria-pressed={scheme === certScheme}
-                        onClick={() => {
-                          setCertScheme(scheme);
-                          setCert(scheme === 'Other' ? 'CCC' : 'All');
-                        }}
-                        className={scheme === certScheme ? 'selected' : ''}
-                      >
-                        {scheme}
-                      </button>
-                    ))}
-                  </fieldset>
-                  {(certScheme === 'EN' || certScheme === 'LTF') && (
-                    <fieldset
-                      className="cert-options"
-                      aria-label={`${certScheme} certification class`}
-                    >
-                      {['All', 'A', 'B', 'C', 'D'].map((c) => (
-                        <button
-                          key={c}
-                          onClick={() => setCert(c)}
-                          aria-pressed={c === cert}
-                          className={c === cert ? 'selected' : ''}
-                        >
-                          {c}
-                        </button>
-                      ))}
-                    </fieldset>
-                  )}
-                  {certScheme === 'Other' && (
-                    <NativeSelect
-                      aria-label="Other certification"
-                      value={cert}
-                      onChange={(event) => setCert(event.target.value)}
-                    >
-                      {['CCC', 'Load Test Only', 'Uncertified'].map((c) => (
-                        <option key={c}>{c}</option>
-                      ))}
-                    </NativeSelect>
-                  )}
-                  <p className="filter-hint">
-                    {certScheme === 'DGAC'
-                      ? 'Wings with recorded DGAC certification.'
-                      : 'Compare the certification for each size.'}
-                  </p>
-                </section>
-              </>
-            )}
-            {category === 'Reserves' && (
-              <ReserveFilterControls
-                value={reserveFilters}
-                onChange={setReserveFilters}
-              />
-            )}
-            {category === 'Wings' && (
-              <>
-                <section className="advanced-filter">
-                  <h3>All-up weight (kg)</h3>
-                  <Input
-                    aria-label="All-up flying weight in kilograms"
-                    type="number"
-                    min="1"
-                    max="400"
-                    placeholder="e.g. 90"
-                    value={allUpWeight}
-                    onChange={(e) => setAllUpWeight(e.target.value)}
-                  />
-                  <p className="filter-hint">
-                    Pilot + wing + harness + all equipment. Matches the recorded
-                    load range.
-                  </p>
-                </section>
-                <section className="advanced-filter">
-                  <h3>Maximum equipment weight</h3>
-                  <NativeSelect
-                    aria-label="Maximum equipment weight"
-                    value={wingMaxWeight}
-                    onChange={(event) => setWingMaxWeight(event.target.value)}
-                  >
-                    <option value="">Any weight</option>
-                    {[1, 1.5, 2, 3, 4, 5, 6].map((w) => (
-                      <option key={w} value={w}>
-                        Up to {w} kg
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </section>
-                <RangeFilter
-                  label="Flat surface"
-                  unit="m²"
-                  bounds={wingOptions.area}
-                  value={areaRange}
-                  step={0.1}
-                  onChange={setAreaRange}
-                />
-                <RangeFilter
-                  label="Flat aspect ratio"
-                  bounds={wingOptions.aspectRatio}
-                  value={aspectRatioRange}
-                  step={0.01}
-                  onChange={setAspectRatioRange}
-                />
-                <RangeFilter
-                  label="Number of cells"
-                  bounds={wingOptions.cells}
-                  value={cellsRange}
-                  step={1}
-                  onChange={setCellsRange}
-                />
-                <section className="advanced-filter">
-                  <h3>Maximum price (£)</h3>
-                  <Input
-                    aria-label="Maximum recorded price in pounds"
-                    type="number"
-                    min="1"
-                    step="100"
-                    placeholder="Any price (£)"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                  />
-                </section>
-              </>
-            )}
-            <section>
-              <h3>Model status</h3>
-              <NativeSelect
-                aria-label="Model status"
-                value={modelStatus}
-                onChange={(event) => setModelStatus(event.target.value)}
-              >
-                <option value="All">All</option>
-                <option value="Current">Current</option>
-                <option value="Past model">Past</option>
-              </NativeSelect>
-            </section>
-            <label className="current-toggle for-sale-toggle">
-              <Checkbox
-                checked={forSaleOnly}
-                onCheckedChange={(value) => setForSaleOnly(!!value)}
-              />{' '}
-              Sold by Flybubble
-            </label>
+            <CatalogueFilters
+              category={category}
+              brands={brands}
+              selectedBrands={selectedBrands}
+              filterSizes={filterSizes}
+              colours={colours}
+              certScheme={certScheme}
+              cert={cert}
+              allUpWeight={allUpWeight}
+              wingMaxWeight={wingMaxWeight}
+              maxPrice={maxPrice}
+              modelStatus={modelStatus}
+              forSaleOnly={forSaleOnly}
+              areaRange={areaRange}
+              aspectRatioRange={aspectRatioRange}
+              cellsRange={cellsRange}
+              wingOptions={wingOptions}
+              setSelectedBrands={setSelectedBrands}
+              setFilterSizes={setFilterSizes}
+              setColours={setColours}
+              setCertScheme={setCertScheme}
+              setCert={setCert}
+              setAllUpWeight={setAllUpWeight}
+              setWingMaxWeight={setWingMaxWeight}
+              setMaxPrice={setMaxPrice}
+              setModelStatus={setModelStatus}
+              setForSaleOnly={setForSaleOnly}
+              setAreaRange={setAreaRange}
+              setAspectRatioRange={setAspectRatioRange}
+              setCellsRange={setCellsRange}
+              reserveFilters={reserveFilters}
+              setReserveFilters={setReserveFilters}
+            />
             <div className="guide-card">
               <Mountain size={26} />
               <h3>
