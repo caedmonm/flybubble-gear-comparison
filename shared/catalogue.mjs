@@ -10,6 +10,14 @@ const key = (brand, model) => `${brand}:${model}`.toLowerCase();
 const id = (value) => encodeURIComponent(value.toLowerCase());
 export function buildCatalogue(tables, images = {}) {
   const metadata = new Map((tables.DSGeneric || []).map(r => [key(r.Brand,r.Model),r]));
+  const colours = new Map();
+  for (const row of tables.DSColours || []) {
+    const colour = clean(row.Colour);
+    if (!colour) continue;
+    const modelKey = key(row.Brand, row.Model);
+    if (!colours.has(modelKey)) colours.set(modelKey, new Set());
+    colours.get(modelKey).add(colour);
+  }
   const groups = new Map();
   for (const [table,category] of [['WingsData','Wings'],['ReservesData','Reserves']]) {
     for (const row of tables[table] || []) {
@@ -20,16 +28,29 @@ export function buildCatalogue(tables, images = {}) {
       if (!groups.has(groupKey)) groups.set(groupKey, {
         id:id(groupKey), brand:clean(row.Make), model:clean(row.Model), category,
         year:number(meta?.modelyear), url:safeShopUrl(row.ShopURL || meta?.shopurl),
-        image:images[key(row.Make,row.Model)] || null, variants:[],
+        image:images[key(row.Make,row.Model)] || null,
+        colours:reserve ? [] : [...(colours.get(key(row.Make,row.Model)) || [])].sort((a,b)=>a.localeCompare(b)), variants:[],
       });
       const product = groups.get(groupKey);
       const certification = clean(reserve ? row.CertEN : row.CertEN || row.Certification);
       // Mixed EN ratings such as A / B must not be simplified to a single class.
       const certClass = !reserve && certification?.match(/^(?:(?:LTF\/EN|EN\/LTF|EN)[\s/-]*)?([ABCD])(?:[*+])?(?:\s*\/\s*LTF\s*[ABCD])?$/i)?.[1]?.toUpperCase() || null;
+      const ltf = clean(reserve ? row.CertLTF : row.CertLtf);
+      const ltfClass = !reserve && ltf?.match(/^(?:LTF[\s/-]*)?([ABCD])[*+]?$/i)?.[1]?.toUpperCase() || null;
+      const certificationText = [row.Certification, row.CertEN, row.CertLtf].filter(Boolean).join(' ');
+      const dgac = !reserve && (/^(?:yes|ok|true|1)$/i.test(clean(row.CertDGAC) || '') || /\bDGAC\b/i.test(row.CertDGAC || '') || /\bDGAC\b/i.test(certificationText));
+      const otherCertifications = [];
+      if (!reserve) {
+        if (/\bCCC\b/i.test(certificationText)) otherCertifications.push('CCC');
+        if (/\bload\s*test\b/i.test(certificationText) || (!certClass && !ltfClass && /(?:\bEN\s*)?\b926\s*-\s*1\b/i.test(certificationText))) otherCertifications.push('Load Test Only');
+        // Missing/dash/pending certification is unknown, not explicitly uncertified.
+        if (!certClass && !ltfClass && !dgac && !otherCertifications.length && /^(?:none|uncertified|not certified)$/i.test(clean(row.Certification) || certification || '')) otherCertifications.push('Uncertified');
+      }
       product.variants.push({
         id:id(`${groupKey}:${row.Size || 'one-size'}`),size:clean(row.Size) || 'One size',
         status:clean(reserve ? row.Modelstatus : row.Status)?.toLowerCase() === 'current' ? 'Current' : 'Past model',
-        certification,certClass,ltf:clean(reserve ? row.CertLTF : row.CertLtf),
+        forSale:!reserve && clean(row.Sell)?.toUpperCase() === 'Y',
+        certification,certClass,ltf,ltfClass,dgac,otherCertifications,
         price:number(reserve ? row.Ourprice : row.RRP),
         weight:reserve ? number(number(row.Weightmanu) ? Number(row.Weightmanu)/1000 : null) : number(row.Gliderwt),
         minLoad:number(reserve ? row.Loadmin : row.certAUWmn),maxLoad:number(reserve ? row.Loadmax : row.certAUWmx),

@@ -14,6 +14,8 @@ public = parser.read_tables(source, projection)
 # DSGeneric contributes only model metadata for actual comparison records.
 keys = {(str(r['Make']).lower(),str(r['Model']).lower()) for t in ['WingsData','ReservesData'] for r in public[t]}
 public['DSGeneric'] = [r for r in public['DSGeneric'] if (str(r['Brand']).lower(),str(r['Model']).lower()) in keys]
+wing_keys = {(str(r['Make']).lower(), str(r['Model']).lower()) for r in public['WingsData']}
+public['DSColours'] = [r for r in public['DSColours'] if (str(r['Brand']).lower(),str(r['Model']).lower()) in wing_keys]
 (ROOT / 'data').mkdir(exist_ok=True)
 (ROOT / 'data/catalogue-rows.json').write_text(json.dumps(public,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 print(json.dumps({key:len(rows) for key,rows in public.items()}))

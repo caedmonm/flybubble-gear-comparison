@@ -41,7 +41,7 @@ Attach the existing managed database to the app, add the app as a trusted source
 | `DB_CA_CERT` | `${flybubble-db.CA_CERT}` |
 | `SITE_ORIGIN` | `${APP_URL}` |
 
-Use a database user with `SELECT` access only to the three tables in `shared/projection.json`. The app validates TLS certificates, disallows multiple SQL statements, runs reads in read-only transactions, and exposes only allowlisted fields. If live MySQL is temporarily unavailable, `/api/catalogue` returns the bundled snapshot with a visible warning instead of taking down the site.
+Use a database user with `SELECT` access only to the four tables in `shared/projection.json`, including `DSColours` for wing colourways. The app validates TLS certificates, disallows multiple SQL statements, runs reads in read-only transactions, and exposes only allowlisted fields. If live MySQL is temporarily unavailable, `/api/catalogue` returns the bundled snapshot with a visible warning instead of taking down the site.
 
 DigitalOcean reference: [Node.js buildpack and runtime support](https://docs.digitalocean.com/products/app-platform/reference/buildpacks/nodejs/), [environment and database bindable variables](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/), and [health checks](https://docs.digitalocean.com/products/app-platform/how-to/manage-health-checks/).
 
@@ -57,7 +57,11 @@ The bundled snapshot uses `DataBe-PrimaryKeys.sql`: 1,228 wing sizes and 176 res
 
 ## Features and data caveats
 
-- Search, category, brand, EN class, maximum price, equipment weight, and all-up weight filters.
+- Search, category, multiple brands (wings and reserves), maximum price, equipment weight, and all-up weight filters.
+- Wings have a “For sale with Flybubble” filter based on the recorded `WingsData.Sell` flag. It is separate from the All / Current / Past model-status filter available for both wings and reserves. Model status defaults to All and the sale filter starts unchecked; Reset restores those defaults.
+- Wings also support multiple sizes and recorded colourways, EN/LTF classes, DGAC, and Other certification (CCC, Load Test Only, Uncertified), plus min–max sliders for flat surface, flat aspect ratio, and cell count.
+- Colourways come from `DSColours` at model level; they do not represent current stock or availability in a particular size. Missing certification is not treated as uncertified. Active specification ranges exclude missing values.
+- The surface filter excludes known source outliers above 100 m² for Skywalk ARAK AIR and MESCAL6. Their original values remain in product details; correcting these source values automatically restores surface filtering for those sizes.
 - Filters must match a single size record; different sizes cannot jointly satisfy incompatible filters.
 - Compare up to four products within one category, choose exact sizes, show only differences, export CSV, or copy a comparison link.
 - Open any product by itself to inspect its size-specific details and follow its Flybubble product link when available.

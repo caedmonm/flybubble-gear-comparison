@@ -51,7 +51,7 @@ test('combined filters must match the same size, not different sizes',()=>{
   assert.equal(filterCatalogue([p],{cert:'B',allUpWeight:100})[0].variants[0].size,'L');
 });
 test('export contains only approved tables and columns, never private fields',()=>{
-  assert.deepEqual(Object.keys(rows).sort(),['DSGeneric','ReservesData','WingsData']);
+  assert.deepEqual(Object.keys(rows).sort(),['DSColours','DSGeneric','ReservesData','WingsData']);
   for(const [table,records] of Object.entries(rows))for(const record of records)assert.deepEqual(Object.keys(record).sort(),projection[table].toSorted());
   const payload=JSON.stringify(products);
   for(const field of ['Cost','OurCost','password','email','Owner name','Serial number','supplier'])assert.ok(!payload.includes(`"${field}"`));
