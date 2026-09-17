@@ -4,12 +4,12 @@ A Next.js gear finder for comparing paragliding wings and reserves. It can run f
 
 ## Run locally
 
-Requires Node.js 22 and npm.
+Requires Node.js 22 or later and Yarn Classic (1.x).
 
 ```sh
-npm ci
+yarn install --frozen-lockfile
 cp .env.example .env.local
-npm run dev
+yarn dev
 ```
 
 Open `http://localhost:3000`. With `DATA_SOURCE=snapshot` no database is required.
@@ -25,6 +25,8 @@ The repository includes a production multi-stage `Dockerfile`. It builds a stand
 5. Set `SITE_ORIGIN` to the final HTTPS origin. App Platform's `${APP_URL}` bindable value is suitable before adding a custom domain.
 
 The Docker image runs as a non-root user and contains only the standalone server, static assets, public product images, and runtime dependencies.
+
+The build uses Yarn Classic and the committed `yarn.lock`. Keep `yarn.lock` in version control and included in the Docker build context; no `package-lock.json` is required.
 
 ### Connect the DigitalOcean MySQL database
 
@@ -76,10 +78,10 @@ The bundled snapshot uses `DataBe-PrimaryKeys.sql`: 1,228 wing sizes and 176 res
 ## Validation
 
 ```sh
-npm test
+yarn test
 python -m unittest discover -s tests -p "test_*.py"
-npm run typecheck
-npm run build
+yarn typecheck
+yarn build
 ```
 
 Tests cover the updated catalogue, stable IDs across primary-key formats, record preservation, unit conversion, same-size filter semantics, safe field projection, URL validation, redacted-password failure, and the snapshot catalogue service. The Python importer tests use synthetic exports to check legacy and native keys, text columns, missing fields, and incomplete exports.
