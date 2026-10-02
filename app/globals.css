@@ -39,6 +39,7 @@
   --muted: #edf1ec;
   --border: #dde3dc;
   --radius: 0.6rem;
+  --fb-blue: #0d77be;
 }
 * {
   box-sizing: border-box;
@@ -165,11 +166,21 @@ a:focus-visible {
   margin: auto;
   padding: 42px 4% 10px;
 }
-.intro {
+.banner {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 33px;
+  justify-content: center;
+  background-color: var(--fb-blue);
+  width: 100%;
+  color: white;
+  padding: 12px 4%;
+}
+.banner-logo {
+  display: block;
+  width: 280px;
+  max-width: 100%;
+  height: auto;
+  margin-right: auto;
 }
 .eyebrow {
   font-size: 10px;
@@ -220,8 +231,7 @@ h1 > span {
   display: flex;
   align-items: center;
   gap: 30px;
-  border-bottom: 1px solid #d7dfd7;
-  margin-bottom: 28px;
+  padding: 10px 4%;
 }
 .category-tabs > a {
   display: flex;
@@ -229,25 +239,28 @@ h1 > span {
   gap: 10px;
   background: none;
   border: 0;
-  padding: 0 0 17px;
-  color: #7b837d;
+  padding: 10px 0;
+  color: #ffffffbb;
   font-size: 13px;
   position: relative;
 }
 .category-tabs > a.active {
-  color: #285143;
-  font-weight: 600;
+  color: #fff;
 }
-.category-tabs > a.active:after {
+.category-tabs > a:after {
   position: absolute;
   content: "";
   bottom: -1px;
   height: 2px;
-  background: var(--primary);
+  background: #ffffff00;
   width: 100%;
+  transition: 1.2s;
+}
+.category-tabs > a.active:after {
+  background: #ffffffbb;
 }
 .category-tabs a span {
-  background: #e8eee6;
+  background: #2e2e2e;
   font-size: 10px;
   padding: 3px 7px;
   border-radius: 4px;
