@@ -8,6 +8,12 @@ export function safeShopUrl(value) {
 }
 const key = (brand, model) => `${brand}:${model}`.toLowerCase();
 const id = (value) => encodeURIComponent(value.toLowerCase());
+// Stable across imports, independent of row order and database primary keys.
+export function compactProductId(value) {
+  let hash = 0xcbf29ce484222325n;
+  for (const byte of new TextEncoder().encode(value)) hash = BigInt.asUintN(64, (hash ^ BigInt(byte)) * 0x100000001b3n);
+  return hash.toString(36);
+}
 function packedVolume(row) {
   const range = clean(row.Volrange)?.match(/^(\d+(?:\.\d+)?)(?:\s*[-–]\s*(\d+(?:\.\d+)?))?$/);
   const values = [number(row.Volmin) ?? number(range?.[1]), number(row.Volmax) ?? number(range?.[2] || range?.[1])];
@@ -34,7 +40,7 @@ export function buildCatalogue(tables, images = {}) {
       const meta = metadata.get(key(row.Make,row.Model));
       const reserve = category === 'Reserves';
       if (!groups.has(groupKey)) groups.set(groupKey, {
-        id:id(groupKey), brand:clean(row.Make), model:clean(row.Model), category,
+        id:id(groupKey), shareId:compactProductId(id(groupKey)), brand:clean(row.Make), model:clean(row.Model), category,
         year:number(meta?.modelyear), url:safeShopUrl(row.ShopURL || meta?.shopurl),
         image:images[key(row.Make,row.Model)] || null,
         colours:reserve ? [] : [...(colours.get(key(row.Make,row.Model)) || [])].sort((a,b)=>a.localeCompare(b)), variants:[],

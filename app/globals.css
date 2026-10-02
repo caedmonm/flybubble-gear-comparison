@@ -1243,6 +1243,20 @@ h1 > span {
   flex-direction: column;
   gap: 5px;
 }
+
+.share-link-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.share-link-control > output,
+.share-link-control > .share-fallback {
+  flex-basis: 100%;
+}
+.share-link-control > output {
+  font-size: 12px;
+}
 .share-fallback input {
   border: 1px solid #d5dfcd;
   border-radius: 5px;

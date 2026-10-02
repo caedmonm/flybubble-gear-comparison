@@ -7,7 +7,7 @@ export type Variant = {
   cells: number | null; construction: string | null; type: string | null; risers: string | null;
   sinkRate: number | null; openingTime: number | null; volumeMin: number | null; volumeMax: number | null; steerable: string | null;
 };
-export type Product = {id: string; brand: string; model: string; category: string; year: number | null; url: string | null; image: string | null; colours: string[]; variants: Variant[]};
+export type Product = {id: string; shareId?: string; brand: string; model: string; category: string; year: number | null; url: string | null; image: string | null; colours: string[]; variants: Variant[]};
 
 export type ReserveFilters = {
   types: string[];

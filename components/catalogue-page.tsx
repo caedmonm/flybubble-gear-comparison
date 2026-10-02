@@ -5,13 +5,16 @@ import { buildCatalogue } from '@/shared/catalogue.mjs';
 
 export default function CataloguePage({
   category,
+  initialSearch,
 }: {
   category: 'Wings' | 'Reserves';
+  initialSearch?: string;
 }) {
   return (
     <Catalogue
       key={category}
       category={category}
+      initialSearch={initialSearch}
       initialProducts={buildCatalogue(rows, images)}
     />
   );

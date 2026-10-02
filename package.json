@@ -13,6 +13,7 @@
     "format": "oxfmt",
     "test": "node --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit",
+    "db:share-links": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/create-share-table.mjs",
     "import:snapshot": "python scripts/import-snapshot.py"
   },
   "dependencies": {
