@@ -363,6 +363,23 @@ export default function Catalogue({
           </span> */}
           </Link>
         </div>
+        <div className="search-box banner-search">
+          <Search size={19} />
+          <Input
+            aria-label="Search products"
+            placeholder="Search by brand or model…"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setLimit(12);
+            }}
+          />
+          {query && (
+            <button aria-label="Clear search" onClick={() => setQuery("")}>
+              ×
+            </button>
+          )}
+        </div>
       </div>
 
       <main id="catalogue" className="workspace">
@@ -416,54 +433,9 @@ export default function Catalogue({
               reserveFilters={reserveFilters}
               setReserveFilters={setReserveFilters}
             />
-            <div className="guide-card">
-              <Mountain size={26} />
-              <h3>
-                Small details.
-                <br />
-                Big differences.
-              </h3>
-              <p>
-                Add up to 4 products to compare their specifications side by
-                side.
-              </p>
-              <span>
-                Start with your shortlist <ArrowRight size={15} />
-              </span>
-            </div>
-            <div className="filter-footnote">
-              <ShieldCheck size={16} />
-              <p>
-                Product specifications only.
-                <br />
-                Personal and internal records excluded.
-              </p>
-            </div>
           </aside>
 
           <div className="results">
-            <div className="search-row">
-              <div className="search-box">
-                <Search size={19} />
-                <Input
-                  aria-label="Search products"
-                  placeholder="Search by brand or model…"
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    setLimit(12);
-                  }}
-                />
-                {query && (
-                  <button
-                    aria-label="Clear search"
-                    onClick={() => setQuery("")}
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            </div>
             <div className="results-toolbar">
               <p>
                 <strong>{filtered.length}</strong>{" "}
@@ -630,13 +602,6 @@ export default function Catalogue({
           </div>
         </div>
       </main>
-      <footer className="footer">
-        <span>
-          flybubble. <b>COMPARE</b>
-        </span>
-        <span>A little more knowledge. A better day in the air.</span>
-        <span>Built around your catalogue</span>
-      </footer>
 
       {selected.length > 0 && (
         <div className="comparison-tray">
