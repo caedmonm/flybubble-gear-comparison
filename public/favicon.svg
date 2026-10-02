@@ -1,1 +1,8 @@
-<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="9" fill="#255b4c"/><text x="12" y="31" fill="#faf9f3" font-family="Arial,sans-serif" font-weight="bold" font-size="35">f</text><circle cx="29" cy="29" r="3" fill="#c49771"/></svg>
+<svg width="704px" height="666px" viewBox="0 0 704 666" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>bubble-icon-green@1x</title>
+    <g id="bubble-icon-green" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval" stroke="#A9D039" stroke-width="42" cx="292" cy="190" r="144"></circle>
+        <circle id="Oval" stroke="#A9D039" stroke-width="42" cx="489" cy="362" r="61"></circle>
+        <circle id="Oval" stroke="#A9D039" stroke-width="42" cx="359" cy="527" r="92"></circle>
+    </g>
+</svg>
