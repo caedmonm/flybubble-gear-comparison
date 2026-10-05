@@ -34,6 +34,7 @@ test('every filter survives sharing, including decimal ranges and reserve limits
     modelStatus: 'Current',
     forSaleOnly: true,
     sort: 'weight',
+    showEachSize: true,
     reserveFilters: {
       areaRange: [20, 40],
       types: ['Cruciform', 'Round'],

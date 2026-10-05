@@ -34,6 +34,7 @@ export function defaultUrlFilters() {
     allUpWeight: '',
     modelStatus: 'All',
     forSaleOnly: false,
+    showEachSize: false,
     sort: 'name',
     reserveFilters: defaultReserveFilters(),
   };
@@ -76,6 +77,7 @@ const managedKeys = [
   'item',
   'view',
   'forSale',
+  'eachSize',
   ...Object.values(lists),
   ...Object.values(ranges),
   ...strings,
@@ -121,6 +123,7 @@ export function readUrlFilters(params) {
       : ['All', 'A', 'B', 'C', 'D'];
   if (!ratings.includes(filters.cert)) filters.cert = ratings[0];
   filters.forSaleOnly = params.get('forSale') === '1';
+  filters.showEachSize = params.get('eachSize') === '1';
   filters.reserveFilters.types = [
     ...new Set(params.getAll('reserve.type').filter(Boolean)),
   ];
@@ -224,6 +227,7 @@ export function writeCatalogueUrl(existing, filters, selection, compareOpen) {
   for (const key of strings)
     if (filters[key] !== defaults[key]) params.set(key, filters[key]);
   if (filters.forSaleOnly) params.set('forSale', '1');
+  if (filters.showEachSize) params.set('eachSize', '1');
   const reserve = filters.reserveFilters;
   for (const value of [...new Set(reserve.types)].sort((a, b) =>
     a.localeCompare(b),

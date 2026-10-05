@@ -19,6 +19,8 @@ import {
   Wind,
 } from 'lucide-react';
 
+import { Switch } from '@/components/ui/switch';
+import { catalogueItems } from '@/shared/catalogue-view.mjs';
 import { Button } from '@/components/ui/button';
 
 import { Input } from '@/components/ui/input';
@@ -74,10 +76,11 @@ export default function Catalogue({
   const [cert, setCert] = useState('All');
 
   const [sort, setSort] = useState('name');
+  const [showEachSize, setShowEachSize] = useState(false);
 
   const [selected, setSelected] = useState<string[]>([]);
 
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(24);
 
   const [maxPrice, setMaxPrice] = useState(''),
     [allUpWeight, setAllUpWeight] = useState('');
@@ -154,6 +157,7 @@ export default function Catalogue({
       setModelStatus(filters.modelStatus);
       setForSaleOnly(filters.forSaleOnly);
       setSort(filters.sort);
+      setShowEachSize(filters.showEachSize);
       setReserveFilters({ ...filters.reserveFilters, maxWeightGrams: '' });
       setDetails(null);
 
@@ -222,6 +226,7 @@ export default function Catalogue({
         modelStatus,
         forSaleOnly,
         sort,
+        showEachSize,
         reserveFilters,
       },
       entries.map((entry) => ({
@@ -258,9 +263,10 @@ export default function Catalogue({
   }, [selected, sizes, ready]);
 
   useEffect(
-    () => setLimit(12),
+    () => setLimit(24),
     [
       query,
+      showEachSize,
       selectedBrands,
       filterSizes,
       colours,
@@ -333,6 +339,11 @@ export default function Catalogue({
     [products, activeFilters],
   );
 
+  const items = useMemo(
+    () => catalogueItems(filtered, showEachSize, sort),
+    [filtered, showEachSize, sort],
+  );
+
   const reset = () => {
     setSelectedBrands([]);
     setFilterSizes([]);
@@ -358,7 +369,7 @@ export default function Catalogue({
     setSizes((current) => ({ ...current, [product.id]: size }));
   };
 
-  const toggle = (id: string) => {
+  const toggle = (id: string, size?: string) => {
     const product = products.find((p) => p.id === id);
 
     if (
@@ -373,11 +384,18 @@ export default function Catalogue({
       return;
     }
 
+    // Clicking another size of a shortlisted model selects that size.
+    if (size && selected.includes(id) && sizes[id] !== size) {
+      setSizes((current) => ({ ...current, [id]: size }));
+      return;
+    }
+
     if (!selected.includes(id)) {
+      if (selected.length >= 4) return;
       const matching = filtered.find((p) => p.id === id);
 
       if (matching)
-        setSizes((s) => ({ ...s, [id]: matching.variants[0].size }));
+        setSizes((s) => ({ ...s, [id]: size ?? matching.variants[0].size }));
     }
 
     setSelected((s) =>
@@ -432,7 +450,7 @@ export default function Catalogue({
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
-              setLimit(12);
+              setLimit(24);
             }}
           />
           {query && (
@@ -502,8 +520,15 @@ export default function Catalogue({
           <div className="results">
             <div className="results-toolbar">
               <p>
-                <strong>{filtered.length}</strong>{' '}
-                {category === 'Wings' ? 'wings' : 'reserves'} to explore{' '}
+                <strong>{items.length}</strong>{' '}
+                {showEachSize
+                  ? category === 'Wings'
+                    ? 'wing sizes'
+                    : 'reserve sizes'
+                  : category === 'Wings'
+                    ? 'wings'
+                    : 'reserves'}{' '}
+                to explore{' '}
                 <span>
                   ·{' '}
                   {modelStatus === 'All'
@@ -521,35 +546,49 @@ export default function Catalogue({
                   )
                 }
               />
-              <label className="sort-label">
-                <ArrowDownUp size={15} />
-                <NativeSelect
-                  aria-label="Sort products"
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                >
-                  <option value="featured">Catalogue order</option>
-                  <option value="price">Price: low to high</option>
-                  <option value="weight">Lightest first</option>
-                  <option value="name">Brand & model A–Z</option>
-                </NativeSelect>
-              </label>
+              <div className="catalogue-view-controls">
+                <label className="size-view-toggle">
+                  <Switch
+                    size="sm"
+                    checked={showEachSize}
+                    onCheckedChange={setShowEachSize}
+                    aria-label="Show each size"
+                  />
+                  Show each size
+                </label>
+                <label className="sort-label">
+                  <ArrowDownUp size={15} />
+                  <NativeSelect
+                    aria-label="Sort products"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                  >
+                    <option value="featured">Catalogue order</option>
+                    <option value="price">Price: low to high</option>
+                    <option value="weight">Lightest first</option>
+                    <option value="name">Brand & model A–Z</option>
+                  </NativeSelect>
+                </label>
+              </div>
             </div>
 
             <div className="product-grid">
-              {filtered.slice(0, limit).map((p) => {
+              {items.slice(0, limit).map((p) => {
                 const v = p.variants[0];
                 const product = products.find((item) => item.id === p.id) ?? p;
-                const added = selected.includes(p.id);
+                const added =
+                  selected.includes(p.id) &&
+                  (!showEachSize || sizes[p.id] === v.size);
+                const cardName = `${p.brand} ${p.model}${showEachSize ? `, size ${v.size}` : ''}`;
                 return (
                   <article
                     className={`product-card ${added ? 'is-selected' : ''}`}
-                    key={p.id}
+                    key={showEachSize ? v.id : p.id}
                   >
                     <button
                       className="card-details-hitbox"
                       onClick={() => openDetails(product, v.size)}
-                      aria-label={`View details for ${p.brand} ${p.model}`}
+                      aria-label={`View details for ${cardName}`}
                     />
                     <div className="product-photo">
                       <ProductImage product={p} />
@@ -563,11 +602,15 @@ export default function Catalogue({
                           : v.type || 'Reserve'}
                       </span>
                       <button
-                        aria-label={`${added ? 'Remove' : 'Add'} ${p.brand} ${p.model} ${added ? 'from' : 'to'} comparison`}
+                        aria-label={`${added ? 'Remove' : 'Add'} ${cardName} ${added ? 'from' : 'to'} comparison`}
                         aria-pressed={added}
                         className={`quick-add ${added ? 'checked' : ''}`}
-                        onClick={() => toggle(p.id)}
-                        disabled={!added && selected.length >= 4}
+                        onClick={() =>
+                          toggle(p.id, showEachSize ? v.size : undefined)
+                        }
+                        disabled={
+                          !selected.includes(p.id) && selected.length >= 4
+                        }
                       >
                         {added ? (
                           <Check size={17} />
@@ -581,9 +624,10 @@ export default function Catalogue({
                       <h2>
                         <button
                           onClick={() => openDetails(product, v.size)}
-                          aria-label={`View details for ${p.brand} ${p.model}`}
+                          aria-label={`View details for ${cardName}`}
                         >
                           {p.model}
+                          {showEachSize && ` · ${v.size}`}
                         </button>
                       </h2>
                       <p className="product-type">
@@ -591,12 +635,15 @@ export default function Catalogue({
                           (p.category === 'Wings'
                             ? 'Paragliding wing'
                             : 'Reserve parachute')}{' '}
-                        <span>· {p.variants.length} matching sizes</span>
+                        {!showEachSize && (
+                          <span>· {p.variants.length} matching sizes</span>
+                        )}
                       </p>
                       <div className="key-specs">
                         <div>
                           <span>
-                            <Feather size={12} /> Weight from
+                            <Feather size={12} />{' '}
+                            {showEachSize ? 'Weight' : 'Weight from'}
                           </span>
                           <strong>{spec(lowest(p, 'weight'), ' kg')}</strong>
                         </div>
@@ -627,15 +674,19 @@ export default function Catalogue({
                         <div>
                           <small>
                             Recorded {p.category === 'Wings' ? 'RRP' : 'retail'}{' '}
-                            from
+                            {!showEachSize && 'from'}
                           </small>
                           <strong>{money(lowest(p, 'price'))}</strong>
                         </div>
                         <Button
                           variant={added ? 'default' : 'outline'}
                           className="compare-button"
-                          onClick={() => toggle(p.id)}
-                          disabled={!added && selected.length >= 4}
+                          onClick={() =>
+                            toggle(p.id, showEachSize ? v.size : undefined)
+                          }
+                          disabled={
+                            !selected.includes(p.id) && selected.length >= 4
+                          }
                         >
                           {added ? <Check /> : <GitCompareArrows />}
                           {added ? 'Added' : 'Compare'}
@@ -647,7 +698,7 @@ export default function Catalogue({
               })}
             </div>
 
-            {filtered.length === 0 && (
+            {items.length === 0 && (
               <div className="empty-state">
                 <Search size={30} />
                 <h2>No matching gear</h2>
@@ -656,11 +707,11 @@ export default function Catalogue({
               </div>
             )}
 
-            {filtered.length > limit && (
+            {items.length > limit && (
               <Button
                 variant="outline"
                 className="load-more"
-                onClick={() => setLimit(limit + 12)}
+                onClick={() => setLimit(limit + 24)}
               >
                 Explore more {category.toLowerCase()} <ArrowRight />
               </Button>

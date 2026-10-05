@@ -439,6 +439,7 @@ h1 > span {
   justify-content: space-between;
   gap: 12px;
   min-height: 62px;
+  flex-wrap: wrap;
 }
 .results-toolbar p {
   font-size: 11px;
@@ -452,6 +453,23 @@ h1 > span {
   font-size: 10px;
   color: #8b9288;
   margin-left: 7px;
+}
+.catalogue-view-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-left: auto;
+}
+.size-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #788374;
+  cursor: pointer;
+  white-space: nowrap;
 }
 .sort-label {
   display: flex;
