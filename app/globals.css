@@ -358,6 +358,13 @@ h1 > span {
   height: 31px;
   font-size: 14px;
 }
+.cert-other-options {
+  flex-wrap: wrap;
+}
+.cert-other-options button {
+  flex: 1 1 auto;
+  padding: 0 8px;
+}
 .cert-options button.selected {
   background: #255b4c;
   color: white;

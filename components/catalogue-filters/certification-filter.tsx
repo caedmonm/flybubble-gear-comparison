@@ -1,6 +1,5 @@
 'use client';
 
-import { MultiSelectFilter } from '@/components/filter-controls';
 import type { CatalogueFilterProps } from './types';
 
 export default function CertificationFilter({
@@ -49,19 +48,22 @@ export default function CertificationFilter({
             </button>
           ))}
       </fieldset>
-      {(certScheme === 'EN' || certScheme === 'LTF') && (
+      {['EN', 'LTF', 'Other'].includes(certScheme) && (
         <fieldset
-          className="cert-options"
+          className={`cert-options${certScheme === 'Other' ? ' cert-other-options' : ''}`}
           aria-label={`${certScheme} certification class`}
         >
-          {['All', 'A', 'B', 'C', 'D']
+          {(certScheme === 'Other'
+            ? ['All', ...new Set([...facets.certifications.Other, ...cert])]
+            : ['All', 'A', 'B', 'C', 'D']
+          )
             .filter(
               (rating) =>
                 rating === 'All' ||
                 cert.includes(rating) ||
-                facets.certifications[certScheme as 'EN' | 'LTF'].includes(
-                  rating,
-                ),
+                facets.certifications[
+                  certScheme as 'EN' | 'LTF' | 'Other'
+                ].includes(rating),
             )
             .map((rating) => (
               <button
@@ -88,15 +90,6 @@ export default function CertificationFilter({
               </button>
             ))}
         </fieldset>
-      )}
-      {certScheme === 'Other' && (
-        <MultiSelectFilter
-          label="Other certifications"
-          options={facets.certifications.Other}
-          value={cert}
-          onChange={setCert}
-          placeholder="All other certifications"
-        />
       )}
       <h3 style={{ marginTop: '13px' }}>DGAC (Paramotor)</h3>
       <fieldset className="cert-options" aria-label="DGAC certification">
