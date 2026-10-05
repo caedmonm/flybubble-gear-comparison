@@ -21,6 +21,8 @@ export function defaultUrlFilters() {
     query: '',
     selectedBrands: /** @type {string[]} */ ([]),
     filterSizes: /** @type {string[]} */ ([]),
+    constructions: /** @type {string[]} */ ([]),
+    weightRange: /** @type {number[] | null} */ (null),
     colours: /** @type {string[]} */ ([]),
     areaRange: /** @type {number[] | null} */ (null),
     aspectRatioRange: /** @type {number[] | null} */ (null),
@@ -41,8 +43,10 @@ const lists = {
   selectedBrands: 'brand',
   filterSizes: 'size',
   colours: 'colour',
+  constructions: 'construction',
 };
 const ranges = {
+  weightRange: 'weight',
   areaRange: 'area',
   aspectRatioRange: 'aspectRatio',
   cellsRange: 'cells',

@@ -67,7 +67,8 @@ export default function Catalogue({
   );
   const [cellsRange, setCellsRange] = useState<number[] | null>(null);
   const [certScheme, setCertScheme] = useState('EN');
-  const [wingMaxWeight, setWingMaxWeight] = useState('');
+  const [weightRange, setWeightRange] = useState<number[] | null>(null);
+  const [constructions, setConstructions] = useState<string[]>([]);
   const [reserveFilters, setReserveFilters] = useState(emptyReserveFilters);
 
   const [cert, setCert] = useState('All');
@@ -135,13 +136,25 @@ export default function Catalogue({
       setCellsRange(filters.cellsRange);
       setCertScheme(filters.certScheme);
       setCert(filters.cert);
-      setWingMaxWeight(filters.wingMaxWeight);
+      const legacyWeight =
+        category === 'Wings'
+          ? filters.wingMaxWeight
+          : filters.reserveFilters.maxWeightGrams;
+      setWeightRange(
+        filters.weightRange ||
+          (legacyWeight !== '' &&
+          Number.isFinite(Number(legacyWeight)) &&
+          Number(legacyWeight) >= 0
+            ? [0, Number(legacyWeight) / (category === 'Wings' ? 1 : 1000)]
+            : null),
+      );
+      setConstructions(filters.constructions);
       setMaxPrice(filters.maxPrice);
       setAllUpWeight(filters.allUpWeight);
       setModelStatus(filters.modelStatus);
       setForSaleOnly(filters.forSaleOnly);
       setSort(filters.sort);
-      setReserveFilters(filters.reserveFilters);
+      setReserveFilters({ ...filters.reserveFilters, maxWeightGrams: '' });
       setDetails(null);
 
       let raw = params.get('selection');
@@ -201,7 +214,9 @@ export default function Catalogue({
         cellsRange,
         certScheme,
         cert,
-        wingMaxWeight,
+        weightRange,
+        constructions,
+        wingMaxWeight: '',
         maxPrice,
         allUpWeight,
         modelStatus,
@@ -253,7 +268,8 @@ export default function Catalogue({
       aspectRatioRange,
       cellsRange,
       certScheme,
-      wingMaxWeight,
+      weightRange,
+      constructions,
       cert,
       category,
       maxPrice,
@@ -280,7 +296,8 @@ export default function Catalogue({
       modelStatus,
       forSaleOnly,
       maxPrice: category === 'Wings' ? maxPrice : '',
-      maxWeight: category === 'Wings' ? wingMaxWeight : '',
+      weightRange,
+      constructions,
       allUpWeight: category === 'Wings' ? allUpWeight : '',
       reserve: reserveFilters,
     }),
@@ -299,7 +316,8 @@ export default function Catalogue({
       modelStatus,
       forSaleOnly,
       maxPrice,
-      wingMaxWeight,
+      weightRange,
+      constructions,
       allUpWeight,
       reserveFilters,
     ],
@@ -323,7 +341,8 @@ export default function Catalogue({
     setAspectRatioRange(null);
     setCellsRange(null);
     setCertScheme('EN');
-    setWingMaxWeight('');
+    setWeightRange(null);
+    setConstructions([]);
     setCert('All');
     setQuery('');
     setMaxPrice('');
@@ -390,7 +409,7 @@ export default function Catalogue({
             className={category === 'Wings' ? 'active' : ''}
           >
             {/* <Wind size={20} /> */}
-            Paragliding wings
+            Wings
             {/* <span>{products.filter((p) => p.category === "Wings").length}</span> */}
           </Link>
           <Link
@@ -399,7 +418,7 @@ export default function Catalogue({
             className={category === 'Reserves' ? 'active' : ''}
           >
             {/* <ShieldCheck size={19} />  */}
-            Reserve parachutes
+            Reserves
             {/* <span>
             {products.filter((p) => p.category === "Reserves").length}
           </span> */}
@@ -452,7 +471,8 @@ export default function Catalogue({
               certScheme={certScheme}
               cert={cert}
               allUpWeight={allUpWeight}
-              wingMaxWeight={wingMaxWeight}
+              weightRange={weightRange}
+              constructions={constructions}
               maxPrice={maxPrice}
               modelStatus={modelStatus}
               forSaleOnly={forSaleOnly}
@@ -466,7 +486,8 @@ export default function Catalogue({
               setCertScheme={setCertScheme}
               setCert={setCert}
               setAllUpWeight={setAllUpWeight}
-              setWingMaxWeight={setWingMaxWeight}
+              setWeightRange={setWeightRange}
+              setConstructions={setConstructions}
               setMaxPrice={setMaxPrice}
               setModelStatus={setModelStatus}
               setForSaleOnly={setForSaleOnly}

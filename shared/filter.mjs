@@ -37,6 +37,11 @@ function specificationValue(product, variant, field) {
   // Known source decimal errors must not stretch the surface slider to 3,074 m².
   // Keep the original value for display; corrected source records work automatically.
   if (field === 'area' && product.brand === 'Skywalk' && ['ARAK AIR', 'MESCAL6'].includes(product.model) && variant.area > 100) return null;
+  // Malformed weight records (including spreadsheet date serials) are unknown for ranges.
+  if (field === 'weight' && product.category === 'Wings' && (
+    (product.brand === 'Bruce Goldsmith Design' && product.model === 'KISS 2' && variant.weight > 1000) ||
+    (product.brand === 'Skywalk' && ['ARAK AIR', 'MESCAL6'].includes(product.model) && variant.weight > 20)
+  )) return null;
   return variant[field];
 }
 function matchesCertification(variant, filters) {
@@ -60,6 +65,8 @@ export function matchingVariants(product, filters = {}) {
       inRange(v.aspectRatio, filters.aspectRatioRange) &&
       inRange(v.cells, filters.cellsRange)
     )) &&
+    matchesAny(filters.constructions, v.construction) &&
+    inRange(specificationValue(product, v, 'weight'), filters.weightRange) &&
     (!filters.maxWeight || (v.weight != null && v.weight <= Number(filters.maxWeight))) &&
     (!filters.maxPrice || (v.price != null && v.price <= Number(filters.maxPrice))) &&
     (!filters.allUpWeight || (v.minLoad != null && v.maxLoad != null && v.minLoad <= Number(filters.allUpWeight) && v.maxLoad >= Number(filters.allUpWeight)))

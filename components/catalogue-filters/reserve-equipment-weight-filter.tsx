@@ -1,35 +1,29 @@
 'use client';
 
-import NumericAvailability from './numeric-availability';
-import { Input } from '@/components/ui/input';
+import { RangeFilter } from '@/components/filter-controls';
 import type { CatalogueFilterProps } from './types';
 
 export default function ReserveEquipmentWeightFilter({
   facets,
-  reserveFilters,
-  setReserveFilters,
-}: Pick<
-  CatalogueFilterProps,
-  'facets' | 'reserveFilters' | 'setReserveFilters'
->) {
+  weightRange,
+  setWeightRange,
+}: Pick<CatalogueFilterProps, 'facets' | 'weightRange' | 'setWeightRange'>) {
   return (
-    <section className="advanced-filter">
-      <h3>Maximum equipment weight (g)</h3>
-      <Input
-        aria-label="Maximum reserve weight in grams"
-        type="number"
-        min="0"
-        step="1"
-        placeholder="Any weight (g)"
-        value={reserveFilters.maxWeightGrams}
-        onChange={(event) =>
-          setReserveFilters({
-            ...reserveFilters,
-            maxWeightGrams: event.target.value,
-          })
-        }
-      />
-      <NumericAvailability bounds={facets.weight} unit="g" />
-    </section>
+    <RangeFilter
+      label="Gear weight"
+      unit="g"
+      bounds={
+        facets.gearWeight?.map((weight: number) =>
+          Number((weight * 1000).toFixed(3)),
+        ) ?? null
+      }
+      value={
+        weightRange?.map((weight) => Number((weight * 1000).toFixed(3))) ?? null
+      }
+      step={1}
+      onChange={(range) =>
+        setWeightRange(range?.map((weight) => weight / 1000) ?? null)
+      }
+    />
   );
 }

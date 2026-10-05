@@ -10,7 +10,8 @@ export type CatalogueFilterProps = {
   certScheme: string;
   cert: string;
   allUpWeight: string;
-  wingMaxWeight: string;
+  weightRange: number[] | null;
+  constructions: string[];
   maxPrice: string;
   modelStatus: string;
   forSaleOnly: boolean;
@@ -30,7 +31,8 @@ export type CatalogueFilterProps = {
   setCertScheme: (value: string) => void;
   setCert: (value: string) => void;
   setAllUpWeight: (value: string) => void;
-  setWingMaxWeight: (value: string) => void;
+  setWeightRange: (value: number[] | null) => void;
+  setConstructions: (value: string[]) => void;
   setMaxPrice: (value: string) => void;
   setModelStatus: (value: string) => void;
   setForSaleOnly: (value: boolean) => void;

@@ -32,6 +32,12 @@ export function catalogueFacets(products, filters) {
     brands: [...new Set(facet(['brands']).map((p) => p.brand))].sort((a, b) =>
       String(a).localeCompare(String(b)),
     ),
+    constructions: values(facet(['constructions']), 'construction'),
+    gearWeight: rangeBounds(
+      facet(['weightRange', 'maxWeight'], ['maxWeightGrams']),
+      'weight',
+      wings ? 0.1 : 0.001,
+    ),
     statuses: values(facet(['modelStatus']), 'status'),
     forSale: facet(['forSaleOnly']).some((p) =>
       p.variants.some((v) => v.forSale),

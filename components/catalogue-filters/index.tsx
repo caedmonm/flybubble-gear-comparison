@@ -2,6 +2,7 @@
 
 import type { ComponentType } from 'react';
 import type { CatalogueFilterProps } from './types';
+import ConstructionFilter from './construction-filter';
 import BrandFilter from './brand-filter';
 import SizeFilter from './size-filter';
 import ColourFilter from './colour-filter';
@@ -34,6 +35,7 @@ const filters = {
     WingAllUpWeightFilter,
     WingAreaFilter,
     WingEquipmentWeightFilter,
+    ConstructionFilter,
     WingCellsFilter,
     BrandFilter,
     SizeFilter,

@@ -125,3 +125,72 @@ test('database colourways are matched by model, deduplicated and limited to wing
   assert.deepEqual(catalogue.find(p=>p.category==='Reserves').colours,[]);
   assert.ok(products.some(p=>p.colours.length));
 });
+
+test('construction unions and inclusive gear weight ranges match the same size in either category', () => {
+  for (const table of ['WingsData', 'ReservesData']) {
+    const weightField = table === 'WingsData' ? 'Gliderwt' : 'Weightmanu';
+    const scale = table === 'WingsData' ? 1 : 1000;
+    const catalogue = buildCatalogue({
+      [table]: [
+        {
+          Make: 'Test',
+          Model: 'Gear',
+          Size: 'S',
+          WBuild: 'Lightweight',
+          [weightField]: 1.2 * scale,
+        },
+        {
+          Make: 'Test',
+          Model: 'Gear',
+          Size: 'M',
+          WBuild: 'Standard',
+          [weightField]: 1.5 * scale,
+        },
+        {
+          Make: 'Test',
+          Model: 'Gear',
+          Size: 'L',
+          WBuild: 'Heavy-duty',
+          [weightField]: 2 * scale,
+        },
+        { Make: 'Test', Model: 'Gear', Size: 'Unknown' },
+      ],
+    });
+    const sizes = (filters) =>
+      filterCatalogue(catalogue, filters).flatMap((p) =>
+        p.variants.map((v) => v.size),
+      );
+    assert.deepEqual(sizes({}), ['S', 'M', 'L', 'Unknown']);
+    assert.deepEqual(sizes({ weightRange: [1.2, 1.5] }), ['S', 'M']);
+    assert.deepEqual(sizes({ weightRange: [1.5, 2] }), ['M', 'L']);
+    assert.deepEqual(sizes({ constructions: ['Standard', 'Heavy-duty'] }), [
+      'M',
+      'L',
+    ]);
+    assert.deepEqual(
+      sizes({ weightRange: [1.2, 1.2], constructions: ['Standard'] }),
+      [],
+    );
+    assert.deepEqual(
+      sizes({ weightRange: [1.5, 1.5], constructions: ['Standard'] }),
+      ['M'],
+    );
+  }
+});
+
+
+test('malformed source weights do not stretch the gear weight slider or produce range matches', () => {
+  const catalogue = buildCatalogue({WingsData:[
+    {Make:'Bruce Goldsmith Design',Model:'KISS 2',Size:'13',Gliderwt:46235},
+    {Make:'Skywalk',Model:'ARAK AIR',Size:'L',Gliderwt:37},
+    {Make:'Skywalk',Model:'ARAK AIR',Size:'XXS',Gliderwt:29},
+    {Make:'Skywalk',Model:'MESCAL6',Size:'L',Gliderwt:55},
+    {Make:'Test',Model:'Wing',Size:'M',Gliderwt:4.5},
+  ]});
+  assert.deepEqual(rangeBounds(catalogue, 'weight', 0.1), [4.5,4.6]);
+  assert.equal(filterCatalogue(catalogue, {}).length, 4);
+  assert.deepEqual(filterCatalogue(catalogue, {weightRange:[0,10]}).map(p=>p.model), ['Wing']);
+  assert.equal(catalogue.find(p=>p.model==='KISS 2').variants[0].weight,46235);
+  const corrected = buildCatalogue({WingsData:[{Make:'Skywalk',Model:'ARAK AIR',Size:'L',Gliderwt:3.7}]});
+  assert.equal(filterCatalogue(corrected, {weightRange:[3,4]}).length,1);
+});

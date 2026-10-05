@@ -184,3 +184,62 @@ test('malformed reserve surface ranges fall back to unrestricted', () => {
     );
   }
 });
+
+test('construction and weight facets can broaden their selection and respect other specifications', () => {
+  const catalogue = buildCatalogue({
+    WingsData: [
+      {
+        Make: 'Test',
+        Model: 'Wing',
+        Size: 'S',
+        WBuild: 'Lightweight',
+        Gliderwt: 2.15,
+        CertEN: 'A',
+      },
+      {
+        Make: 'Test',
+        Model: 'Wing',
+        Size: 'M',
+        WBuild: 'Standard',
+        Gliderwt: 3.5,
+        CertEN: 'A',
+      },
+      {
+        Make: 'Test',
+        Model: 'Wing',
+        Size: 'L',
+        WBuild: 'Heavy-duty',
+        Gliderwt: 5,
+        CertEN: 'B',
+      },
+    ],
+  });
+  const facets = catalogueFacets(catalogue, {
+    category: 'Wings',
+    cert: 'A',
+    constructions: ['Standard'],
+    weightRange: [3, 4],
+  });
+  assert.deepEqual(facets.constructions, ['Standard']);
+  assert.deepEqual(facets.gearWeight, [3.5, 3.6]);
+  const broader = catalogueFacets(catalogue, {
+    category: 'Wings',
+    cert: 'A',
+    constructions: ['Standard'],
+  });
+  assert.deepEqual(broader.constructions, ['Lightweight', 'Standard']);
+  assert.deepEqual(broader.gearWeight, [3.5, 3.6]);
+  const reserves = buildCatalogue({
+    ReservesData: [
+      { Make: 'Test', Model: 'Reserve', Size: 'S', Weightmanu: 1258 },
+    ],
+  });
+  assert.deepEqual(
+    catalogueFacets(reserves, { category: 'Reserves' }).gearWeight,
+    [1.258, 1.259],
+  );
+  assert.deepEqual(
+    catalogueFacets(reserves, { category: 'Reserves' }).constructions,
+    [],
+  );
+});

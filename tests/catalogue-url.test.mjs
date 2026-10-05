@@ -21,6 +21,8 @@ test('every filter survives sharing, including decimal ranges and reserve limits
     selectedBrands: ['Advance', 'Ozone'],
     filterSizes: ['M', 'S'],
     colours: ['Blue / White', 'Red'],
+    constructions: ['Lightweight', 'Standard'],
+    weightRange: [2.5, 4.1],
     areaRange: [20.1, 28.5],
     aspectRatioRange: [4.5, 6.01],
     cellsRange: [40, 70],
@@ -139,7 +141,7 @@ test('legacy links work and malformed, duplicate, mixed and excessive entries ar
 test('malformed ranges and unsupported enumerations fall back to safe defaults', () => {
   for (const range of ['1', ',2', '3,2', '0,Infinity', 'a,2', '-1,2']) {
     assert.equal(
-      readUrlFilters(new URLSearchParams({ area: range })).areaRange,
+      readUrlFilters(new URLSearchParams({ weight: range })).weightRange,
       null,
     );
   }
