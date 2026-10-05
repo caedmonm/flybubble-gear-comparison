@@ -1,6 +1,8 @@
+import { catalogueFacets } from '@/shared/facets.mjs';
 import type { ReserveFilters } from '@/shared/types';
 
 export type CatalogueFilterProps = {
+  facets: ReturnType<typeof catalogueFacets>;
   brands: string[];
   selectedBrands: string[];
   filterSizes: string[];

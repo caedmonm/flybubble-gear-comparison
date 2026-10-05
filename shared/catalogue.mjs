@@ -36,6 +36,8 @@ export function buildCatalogue(tables, images = {}) {
   for (const [table,category] of [['WingsData','Wings'],['ReservesData','Reserves']]) {
     for (const row of tables[table] || []) {
       if (!clean(row.Make) || !clean(row.Model)) continue;
+      // Temporarily unavailable: restore these models here when released.
+      if (category === 'Reserves' && /^phi$/i.test(clean(row.Make)) && /^pop(?: light)?$/i.test(clean(row.Model))) continue;
       const groupKey = `${category}:${key(row.Make,row.Model)}`;
       const meta = metadata.get(key(row.Make,row.Model));
       const reserve = category === 'Reserves';

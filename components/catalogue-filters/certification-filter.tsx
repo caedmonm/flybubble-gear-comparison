@@ -4,13 +4,14 @@ import { NativeSelect } from '@/components/ui/native-select';
 import type { CatalogueFilterProps } from './types';
 
 export default function CertificationFilter({
+  facets,
   certScheme,
   cert,
   setCertScheme,
   setCert,
 }: Pick<
   CatalogueFilterProps,
-  'certScheme' | 'cert' | 'setCertScheme' | 'setCert'
+  'facets' | 'certScheme' | 'cert' | 'setCertScheme' | 'setCert'
 >) {
   return (
     <section className="certification-filter">
@@ -19,35 +20,51 @@ export default function CertificationFilter({
         className="cert-options cert-schemes"
         aria-label="Certification scheme"
       >
-        {['EN', 'LTF', 'DGAC', 'Other'].map((scheme) => (
-          <button
-            key={scheme}
-            aria-pressed={scheme === certScheme}
-            onClick={() => {
-              setCertScheme(scheme);
-              setCert(scheme === 'Other' ? 'CCC' : 'All');
-            }}
-            className={scheme === certScheme ? 'selected' : ''}
-          >
-            {scheme}
-          </button>
-        ))}
+        {['EN', 'LTF', 'DGAC', 'Other']
+          .filter(
+            (scheme) =>
+              scheme === certScheme ||
+              (scheme === 'DGAC'
+                ? facets.certifications.DGAC
+                : facets.certifications[scheme as 'EN' | 'LTF' | 'Other']
+                    .length > 0),
+          )
+          .map((scheme) => (
+            <button
+              key={scheme}
+              aria-pressed={scheme === certScheme}
+              onClick={() => {
+                setCertScheme(scheme);
+                setCert(scheme === 'Other' ? 'CCC' : 'All');
+              }}
+              className={scheme === certScheme ? 'selected' : ''}
+            >
+              {scheme}
+            </button>
+          ))}
       </fieldset>
       {(certScheme === 'EN' || certScheme === 'LTF') && (
         <fieldset
           className="cert-options"
           aria-label={`${certScheme} certification class`}
         >
-          {['All', 'A', 'B', 'C', 'D'].map((c) => (
-            <button
-              key={c}
-              onClick={() => setCert(c)}
-              aria-pressed={c === cert}
-              className={c === cert ? 'selected' : ''}
-            >
-              {c}
-            </button>
-          ))}
+          {['All', 'A', 'B', 'C', 'D']
+            .filter(
+              (c) =>
+                c === 'All' ||
+                c === cert ||
+                facets.certifications[certScheme as 'EN' | 'LTF'].includes(c),
+            )
+            .map((c) => (
+              <button
+                key={c}
+                onClick={() => setCert(c)}
+                aria-pressed={c === cert}
+                className={c === cert ? 'selected' : ''}
+              >
+                {c}
+              </button>
+            ))}
         </fieldset>
       )}
       {certScheme === 'Other' && (
@@ -56,7 +73,7 @@ export default function CertificationFilter({
           value={cert}
           onChange={(event) => setCert(event.target.value)}
         >
-          {['CCC', 'Load Test Only', 'Uncertified'].map((c) => (
+          {[...new Set([...facets.certifications.Other, cert])].map((c) => (
             <option key={c}>{c}</option>
           ))}
         </NativeSelect>

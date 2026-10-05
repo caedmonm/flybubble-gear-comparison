@@ -10,6 +10,7 @@ export type Variant = {
 export type Product = {id: string; shareId?: string; brand: string; model: string; category: string; year: number | null; url: string | null; image: string | null; colours: string[]; variants: Variant[]};
 
 export type ReserveFilters = {
+  areaRange: number[] | null;
   types: string[];
   steerable: string;
   allUpWeight: string;

@@ -27,6 +27,7 @@ import { NativeSelect } from '@/components/ui/native-select';
 
 import Comparison from '@/components/comparison';
 import CatalogueFilters from '@/components/catalogue-filters';
+import { catalogueFacets } from '@/shared/facets.mjs';
 import { emptyReserveFilters } from '@/components/catalogue-filters/reserve-state';
 import {
   hasCatalogueUrlState,
@@ -39,11 +40,7 @@ import ShareLinkButton from '@/components/share-link-button';
 
 import { ProductImage, money, spec } from '@/components/gear-ui';
 
-import {
-  filterCatalogue,
-  minimum as lowest,
-  rangeBounds,
-} from '@/shared/filter.mjs';
+import { filterCatalogue, minimum as lowest } from '@/shared/filter.mjs';
 
 import type { Product } from '@/shared/types';
 
@@ -75,7 +72,7 @@ export default function Catalogue({
 
   const [cert, setCert] = useState('All');
 
-  const [sort, setSort] = useState('featured');
+  const [sort, setSort] = useState('name');
 
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -267,56 +264,28 @@ export default function Catalogue({
     ],
   );
 
-  const brands = useMemo(
-    () =>
-      [
-        ...new Set(
-          products.filter((p) => p.category === category).map((p) => p.brand),
-        ),
-      ].sort(),
-    [products, category],
-  );
-
-  const wingOptions = useMemo(() => {
-    const wings = products.filter((p) => p.category === 'Wings');
-    return {
-      sizes: [
-        ...new Set(wings.flatMap((p) => p.variants.map((v) => v.size))),
-      ].sort((a, b) => a.localeCompare(b, 'en', { numeric: true })),
-      colours: [...new Set(wings.flatMap((p) => p.colours))].sort((a, b) =>
-        a.localeCompare(b),
-      ),
-      area: rangeBounds(wings, 'area', 0.1),
-      aspectRatio: rangeBounds(wings, 'aspectRatio', 0.01),
-      cells: rangeBounds(wings, 'cells', 1),
-    };
-  }, [products]);
-
-  const filtered: Product[] = useMemo(
-    () =>
-      filterCatalogue(products, {
-        category,
-        brands: selectedBrands,
-        sizes: filterSizes,
-        colours,
-        certScheme,
-        areaRange,
-        aspectRatioRange,
-        cellsRange,
-        cert,
-        query,
-        sort,
-        modelStatus,
-        forSaleOnly,
-        maxPrice: category === 'Wings' ? maxPrice : '',
-        maxWeight: category === 'Wings' ? wingMaxWeight : '',
-        allUpWeight: category === 'Wings' ? allUpWeight : '',
-        reserve: reserveFilters,
-      }),
-    [
-      products,
+  const activeFilters = useMemo(
+    () => ({
       category,
+      brands: selectedBrands,
+      sizes: filterSizes,
+      colours,
+      certScheme,
+      areaRange,
+      aspectRatioRange,
+      cellsRange,
+      cert,
       query,
+      sort,
+      modelStatus,
+      forSaleOnly,
+      maxPrice: category === 'Wings' ? maxPrice : '',
+      maxWeight: category === 'Wings' ? wingMaxWeight : '',
+      allUpWeight: category === 'Wings' ? allUpWeight : '',
+      reserve: reserveFilters,
+    }),
+    [
+      category,
       selectedBrands,
       filterSizes,
       colours,
@@ -324,15 +293,26 @@ export default function Catalogue({
       areaRange,
       aspectRatioRange,
       cellsRange,
-      wingMaxWeight,
       cert,
+      query,
       sort,
       modelStatus,
       forSaleOnly,
       maxPrice,
-      reserveFilters,
+      wingMaxWeight,
       allUpWeight,
+      reserveFilters,
     ],
+  );
+  const facets = useMemo(
+    () => catalogueFacets(products, activeFilters),
+    [products, activeFilters],
+  );
+  const brands = facets.brands;
+  const wingOptions = facets;
+  const filtered: Product[] = useMemo(
+    () => filterCatalogue(products, activeFilters),
+    [products, activeFilters],
   );
 
   const reset = () => {
@@ -393,14 +373,16 @@ export default function Catalogue({
   return (
     <>
       <div className="banner">
-        <Image
-          className="banner-logo"
-          src="/flybubble-logo-white.avif"
-          alt="Flybubble"
-          width={660}
-          height={139}
-          unoptimized
-        />
+        <a href="https://flybubble.com/" className="banner-logo-link">
+          <Image
+            className="banner-logo"
+            src="/flybubble-logo-white.avif"
+            alt="Flybubble"
+            width={660}
+            height={139}
+            unoptimized
+          />
+        </a>
         <div className="category-tabs" aria-label="Equipment categories">
           <Link
             href="/wings"
@@ -462,6 +444,7 @@ export default function Catalogue({
             </div>
             <CatalogueFilters
               category={category}
+              facets={facets}
               brands={brands}
               selectedBrands={selectedBrands}
               filterSizes={filterSizes}

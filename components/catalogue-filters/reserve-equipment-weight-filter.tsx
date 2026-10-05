@@ -1,12 +1,17 @@
 'use client';
 
+import NumericAvailability from './numeric-availability';
 import { Input } from '@/components/ui/input';
 import type { CatalogueFilterProps } from './types';
 
 export default function ReserveEquipmentWeightFilter({
+  facets,
   reserveFilters,
   setReserveFilters,
-}: Pick<CatalogueFilterProps, 'reserveFilters' | 'setReserveFilters'>) {
+}: Pick<
+  CatalogueFilterProps,
+  'facets' | 'reserveFilters' | 'setReserveFilters'
+>) {
   return (
     <section className="advanced-filter">
       <h3>Maximum equipment weight (g)</h3>
@@ -24,6 +29,7 @@ export default function ReserveEquipmentWeightFilter({
           })
         }
       />
+      <NumericAvailability bounds={facets.weight} unit="g" />
     </section>
   );
 }

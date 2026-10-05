@@ -8,6 +8,7 @@ export function defaultReserveFilters() {
     maxWeightGrams: '',
     volumeMin: '',
     volumeMax: '',
+    areaRange: null,
     minArea: '',
     loadMin: '',
     loadMax: '',
@@ -31,7 +32,7 @@ export function defaultUrlFilters() {
     allUpWeight: '',
     modelStatus: 'All',
     forSaleOnly: false,
-    sort: 'featured',
+    sort: 'name',
     reserveFilters: defaultReserveFilters(),
   };
 }
@@ -74,6 +75,7 @@ const managedKeys = [
   ...Object.values(lists),
   ...Object.values(ranges),
   ...strings,
+  'reserve.area',
   'reserve.type',
   'reserve.steerable',
   'reserve.loadPercent',
@@ -104,7 +106,7 @@ export function readUrlFilters(params) {
   for (const key of strings)
     if (params.has(key)) filters[key] = params.get(key);
   if (!['featured', 'price', 'weight', 'name'].includes(filters.sort))
-    filters.sort = 'featured';
+    filters.sort = 'name';
   if (!['All', 'Current', 'Past model'].includes(filters.modelStatus))
     filters.modelStatus = 'All';
   if (!['EN', 'LTF', 'DGAC', 'Other'].includes(filters.certScheme))
@@ -118,6 +120,18 @@ export function readUrlFilters(params) {
   filters.reserveFilters.types = [
     ...new Set(params.getAll('reserve.type').filter(Boolean)),
   ];
+  const area = params.get('reserve.area')?.split(',');
+  if (
+    area?.length === 2 &&
+    area.every(
+      (value) =>
+        value.trim() !== '' &&
+        Number.isFinite(Number(value)) &&
+        Number(value) >= 0,
+    ) &&
+    Number(area[0]) <= Number(area[1])
+  )
+    filters.reserveFilters.areaRange = area.map(Number);
   const steerable = params.get('reserve.steerable');
   if (['Yes', 'No'].includes(steerable))
     filters.reserveFilters.steerable = steerable;
@@ -211,6 +225,8 @@ export function writeCatalogueUrl(existing, filters, selection, compareOpen) {
     a.localeCompare(b),
   ))
     params.append('reserve.type', value);
+  if (reserve.areaRange)
+    params.set('reserve.area', reserve.areaRange.join(','));
   if (reserve.steerable) params.set('reserve.steerable', reserve.steerable);
   for (const key of reserveNumbers)
     if (reserve[key] !== '') params.set(`reserve.${key}`, reserve[key]);

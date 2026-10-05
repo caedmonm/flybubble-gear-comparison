@@ -1,12 +1,17 @@
 'use client';
 
+import NumericAvailability from './numeric-availability';
 import { NumericPair } from './numeric-pair';
 import type { CatalogueFilterProps } from './types';
 
 export default function ReserveVolumeFilter({
+  facets,
   reserveFilters,
   setReserveFilters,
-}: Pick<CatalogueFilterProps, 'reserveFilters' | 'setReserveFilters'>) {
+}: Pick<
+  CatalogueFilterProps,
+  'facets' | 'reserveFilters' | 'setReserveFilters'
+>) {
   return (
     <section className="advanced-filter reserve-volume-filter">
       <h3>Packed volume</h3>
@@ -21,6 +26,14 @@ export default function ReserveVolumeFilter({
         onMax={(next) =>
           setReserveFilters({ ...reserveFilters, volumeMax: next })
         }
+      />
+      <NumericAvailability
+        bounds={
+          facets.volumeMin && facets.volumeMax
+            ? [facets.volumeMin[0], facets.volumeMax[1]]
+            : null
+        }
+        unit="L"
       />
       <p className="filter-note">
         The full recorded volume range must fit within these limits. Published

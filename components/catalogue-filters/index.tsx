@@ -19,6 +19,7 @@ import ReserveSteerableFilter from './reserve-steerable-filter';
 import ReserveAllUpWeightFilter from './reserve-all-up-weight-filter';
 import ReserveEquipmentWeightFilter from './reserve-equipment-weight-filter';
 import ReserveVolumeFilter from './reserve-volume-filter';
+import ReserveSurfaceFilter from './reserve-surface-filter';
 import ReserveAreaFilter from './reserve-area-filter';
 import ReserveLoadFilter from './reserve-load-filter';
 import ReservePriceFilter from './reserve-price-filter';
@@ -26,32 +27,33 @@ import ReserveValidation from './reserve-validation';
 
 const filters = {
   Wings: [
-    BrandFilter,
-    WingAllUpWeightFilter,
-    CertificationFilter,
-    WingEquipmentWeightFilter,
-    SizeFilter,
-    ColourFilter,
-    WingAreaFilter,
-    WingAspectRatioFilter,
-    WingCellsFilter,
-    WingPriceFilter,
     ModelStatusFilter,
     ForSaleFilter,
+    CertificationFilter,
+    WingAspectRatioFilter,
+    WingAllUpWeightFilter,
+    WingAreaFilter,
+    WingEquipmentWeightFilter,
+    WingCellsFilter,
+    BrandFilter,
+    SizeFilter,
+    ColourFilter,
+    WingPriceFilter,
   ],
   Reserves: [
-    BrandFilter,
+    ModelStatusFilter,
+    ForSaleFilter,
     ReserveAllUpWeightFilter,
     ReserveTypeFilter,
     ReserveSteerableFilter,
+    ReserveSurfaceFilter,
     ReserveEquipmentWeightFilter,
-    ReserveVolumeFilter,
     ReserveAreaFilter,
     ReserveLoadFilter,
+    ReserveVolumeFilter,
+    BrandFilter,
     ReservePriceFilter,
     ReserveValidation,
-    ModelStatusFilter,
-    ForSaleFilter,
   ],
 } satisfies Record<'Wings' | 'Reserves', ComponentType<CatalogueFilterProps>[]>;
 

@@ -1,12 +1,17 @@
 'use client';
 
+import NumericAvailability from './numeric-availability';
 import { Input } from '@/components/ui/input';
 import type { CatalogueFilterProps } from './types';
 
 export default function ReserveAllUpWeightFilter({
+  facets,
   reserveFilters,
   setReserveFilters,
-}: Pick<CatalogueFilterProps, 'reserveFilters' | 'setReserveFilters'>) {
+}: Pick<
+  CatalogueFilterProps,
+  'facets' | 'reserveFilters' | 'setReserveFilters'
+>) {
   return (
     <section className="advanced-filter reserve-auw-filter">
       <h3>All-up weight (kg)</h3>
@@ -23,6 +28,14 @@ export default function ReserveAllUpWeightFilter({
             allUpWeight: event.target.value,
           })
         }
+      />
+      <NumericAvailability
+        bounds={
+          facets.loadMin && facets.loadMax
+            ? [facets.loadMin[0], facets.loadMax[1]]
+            : null
+        }
+        unit="kg"
       />
       <p className="filter-note">
         Pilot + wing + harness + all equipment. Matches the recorded load range.

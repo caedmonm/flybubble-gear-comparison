@@ -27,6 +27,7 @@ function matchesReserve(variant, filters = {}) {
     atMost(isNumber(variant.weight) ? Math.round(variant.weight * 1000) : null, filters.maxWeightGrams) &&
     atLeast(variant.volumeMin, filters.volumeMin) &&
     atMost(variant.volumeMax, filters.volumeMax) &&
+    inRange(variant.area, filters.areaRange) &&
     atLeast(variant.area, filters.minArea) &&
     atLeast(variant.minLoad, filters.loadMin) &&
     atMost(variant.maxLoad, filters.loadMax) &&
@@ -82,9 +83,9 @@ export function filterCatalogue(products, filters = {}) {
   return result;
 }
 
-// Stable bounds use the complete wing catalogue, independent of active filters.
+// Bounds may be computed from the full catalogue or matching facet variants.
 export function rangeBounds(products, field, step = 1) {
-  const values = products.filter(p => p.category === 'Wings').flatMap(p => p.variants.map(v => specificationValue(p, v, field)))
+  const values = products.flatMap(p => p.variants.map(v => specificationValue(p, v, field)))
     .filter(n => typeof n === 'number' && Number.isFinite(n));
   if (!values.length) return null;
   const min = Number((Math.floor(Math.min(...values) / step) * step).toFixed(3));

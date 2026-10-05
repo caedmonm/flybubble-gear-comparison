@@ -26,7 +26,7 @@ export function MultiSelectFilter({
   placeholder: string;
 }) {
   const [search, setSearch] = useState('');
-  const visible = options.filter((option) =>
+  const visible = [...new Set([...options, ...value])].filter((option) =>
     option.toLowerCase().includes(search.trim().toLowerCase()),
   );
   return (
@@ -111,6 +111,10 @@ export function RangeFilter({
 }) {
   const id = useId();
   const current = value || bounds;
+  const sliderBounds =
+    bounds && value
+      ? [Math.min(bounds[0], value[0]), Math.max(bounds[1], value[1])]
+      : bounds;
   return (
     <section className="range-filter">
       <h3 id={id}>
@@ -133,8 +137,8 @@ export function RangeFilter({
               `Minimum ${label.toLowerCase()}`,
               `Maximum ${label.toLowerCase()}`,
             ]}
-            min={bounds[0]}
-            max={bounds[1]}
+            min={sliderBounds![0]}
+            max={sliderBounds![1]}
             step={step}
             value={current}
             thumbCollisionBehavior="none"
@@ -156,7 +160,17 @@ export function RangeFilter({
           )}
         </>
       ) : (
-        <p className="filter-hint">No specifications recorded.</p>
+        <>
+          <p className="filter-hint">No matching specifications.</p>
+          {value && (
+            <button
+              className="range-filter-clear"
+              onClick={() => onChange(null)}
+            >
+              Clear {label.toLowerCase()} range
+            </button>
+          )}
+        </>
       )}
     </section>
   );

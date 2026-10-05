@@ -91,3 +91,7 @@ yarn build
 ```
 
 Tests cover the updated catalogue, stable IDs across primary-key formats, record preservation, unit conversion, same-size filter semantics, safe field projection, URL validation, redacted-password failure, and the snapshot catalogue service. The Python importer tests use synthetic exports to check legacy and native keys, text columns, missing fields, and incomplete exports.
+
+### Catalogue filtering updates
+
+Results default to Brand & model A–Z. Filter option lists and specification ranges narrow using all other active filters, matching a single size. Selected options remain available to clear, and numeric inputs show the matching specification range without changing entered limits. Reserves also support a flat-surface range alongside the minimum flat-surface limit. PHI POP and POP light are temporarily excluded from both live and snapshot catalogues in `shared/catalogue.mjs`. Shop price links are shown only for a selected size with Current model status.

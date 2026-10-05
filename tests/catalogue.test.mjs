@@ -8,11 +8,12 @@ import projection from '../shared/projection.json' with {type:'json'};
 import { createCatalogueService } from '../server/catalogue-service.mjs';
 const products=buildCatalogue(rows);
 
-test('all SQL size records survive grouping without duplicate IDs',()=>{
+test('enabled SQL size records survive grouping without duplicate IDs',()=>{
   assert.equal(rows.WingsData.length,1228);
   assert.equal(rows.ReservesData.length,176);
-  assert.equal(products.length,325);
-  assert.equal(products.reduce((sum,p)=>sum+p.variants.length,0),1404);
+  const disabled = rows.ReservesData.filter(row => row.Make === 'PHI' && ['POP', 'POP light'].includes(row.Model));
+  assert.equal(products.length,323);
+  assert.equal(products.reduce((sum,p)=>sum+p.variants.length,0),1404-disabled.length);
   assert.equal(new Set(products.map(p=>p.id)).size,products.length);
   const ids=products.flatMap(p=>p.variants.map(v=>v.id));assert.equal(new Set(ids).size,ids.length);
 });

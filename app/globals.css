@@ -2354,3 +2354,6 @@ h1 > span {
     flex-basis: 100%;
   }
 }
+
+.banner-logo-link { display: contents; }
+.banner-logo-link:focus-visible .banner-logo { outline: 2px solid currentColor; outline-offset: 4px; }

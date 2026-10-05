@@ -33,6 +33,7 @@ test('every filter survives sharing, including decimal ranges and reserve limits
     forSaleOnly: true,
     sort: 'weight',
     reserveFilters: {
+      areaRange: [20, 40],
       types: ['Cruciform', 'Round'],
       steerable: 'Yes',
       allUpWeight: '90',
@@ -147,7 +148,7 @@ test('malformed ranges and unsupported enumerations fall back to safe defaults',
       'sort=evil&modelStatus=bad&certScheme=bad&reserve.loadPercent=20',
     ),
   );
-  assert.equal(state.sort, 'featured');
+  assert.equal(state.sort, 'name');
   assert.equal(state.reserveFilters.loadPercent, 100);
 });
 

@@ -1,12 +1,14 @@
 'use client';
 
+import NumericAvailability from './numeric-availability';
 import { Input } from '@/components/ui/input';
 import type { CatalogueFilterProps } from './types';
 
 export default function WingPriceFilter({
+  facets,
   maxPrice,
   setMaxPrice,
-}: Pick<CatalogueFilterProps, 'maxPrice' | 'setMaxPrice'>) {
+}: Pick<CatalogueFilterProps, 'facets' | 'maxPrice' | 'setMaxPrice'>) {
   return (
     <section className="advanced-filter">
       <h3>Maximum price (£)</h3>
@@ -19,6 +21,7 @@ export default function WingPriceFilter({
         value={maxPrice}
         onChange={(e) => setMaxPrice(e.target.value)}
       />
+      <NumericAvailability bounds={facets.price} unit="£" />
     </section>
   );
 }

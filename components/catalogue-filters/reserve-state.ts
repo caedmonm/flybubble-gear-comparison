@@ -1,6 +1,7 @@
 import type { ReserveFilters } from '@/shared/types';
 
 export const emptyReserveFilters = (): ReserveFilters => ({
+  areaRange: null,
   types: [],
   steerable: '',
   allUpWeight: '',

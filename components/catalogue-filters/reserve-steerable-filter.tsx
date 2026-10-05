@@ -4,9 +4,13 @@ import { NativeSelect } from '@/components/ui/native-select';
 import type { CatalogueFilterProps } from './types';
 
 export default function ReserveSteerableFilter({
+  facets,
   reserveFilters,
   setReserveFilters,
-}: Pick<CatalogueFilterProps, 'reserveFilters' | 'setReserveFilters'>) {
+}: Pick<
+  CatalogueFilterProps,
+  'facets' | 'reserveFilters' | 'setReserveFilters'
+>) {
   return (
     <section>
       <h3>Steerable</h3>
@@ -21,8 +25,13 @@ export default function ReserveSteerableFilter({
         }
       >
         <option value="">All</option>
-        <option>Yes</option>
-        <option>No</option>
+        {[
+          ...new Set(
+            [...facets.steerable, reserveFilters.steerable].filter(Boolean),
+          ),
+        ].map((value) => (
+          <option key={value}>{value}</option>
+        ))}
       </NativeSelect>
     </section>
   );

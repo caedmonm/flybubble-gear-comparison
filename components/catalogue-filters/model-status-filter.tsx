@@ -4,9 +4,10 @@ import { NativeSelect } from '@/components/ui/native-select';
 import type { CatalogueFilterProps } from './types';
 
 export default function ModelStatusFilter({
+  facets,
   modelStatus,
   setModelStatus,
-}: Pick<CatalogueFilterProps, 'modelStatus' | 'setModelStatus'>) {
+}: Pick<CatalogueFilterProps, 'facets' | 'modelStatus' | 'setModelStatus'>) {
   return (
     <section>
       <h3>Model status</h3>
@@ -16,8 +17,13 @@ export default function ModelStatusFilter({
         onChange={(event) => setModelStatus(event.target.value)}
       >
         <option value="All">All</option>
-        <option value="Current">Current</option>
-        <option value="Past model">Past</option>
+        {(facets.statuses.includes('Current') || modelStatus === 'Current') && (
+          <option value="Current">Current</option>
+        )}
+        {(facets.statuses.includes('Past model') ||
+          modelStatus === 'Past model') && (
+          <option value="Past model">Past</option>
+        )}
       </NativeSelect>
     </section>
   );
