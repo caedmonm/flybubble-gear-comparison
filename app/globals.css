@@ -560,12 +560,16 @@ h1 > span {
   right: 11px;
   top: 11px;
   border: 1px solid #e0e6de;
-  border-radius: 50%;
+  border-radius: 5px;
   background: white;
-  display: grid;
-  place-items: center;
-  width: 29px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
   height: 29px;
+  font-size: 12px;
+  font-weight: 600;
   color: #82917c;
 }
 .quick-add.checked {
@@ -650,7 +654,7 @@ h1 > span {
   padding-top: 13px;
   border-top: 1px solid #e9ece5;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 6px;
 }
@@ -994,7 +998,6 @@ h1 > span {
     left: 9px;
   }
   .quick-add {
-    width: 26px;
     height: 26px;
     top: 9px;
     right: 9px;
@@ -2411,4 +2414,26 @@ h1 > span {
 .banner-logo-link:focus-visible .banner-logo {
   outline: 2px solid currentColor;
   outline-offset: 4px;
+}
+.card-shop-link {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding:  10px;
+  border-radius: 4px;
+  background: #a9d039;
+  color: #203429;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+}
+.card-shop-link:hover {
+  filter: brightness(0.95);
+}
+.card-shop-link:focus-visible {
+  outline: 2px solid #255b4c;
+  outline-offset: 3px;
 }

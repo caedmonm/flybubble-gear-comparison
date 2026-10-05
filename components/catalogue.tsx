@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Check,
   ChevronRight,
+  ExternalLink,
   Feather,
   GitCompareArrows,
   Mountain,
@@ -629,6 +630,7 @@ export default function Catalogue({
                         ) : (
                           <GitCompareArrows size={17} />
                         )}
+                        <span>{added ? "Added" : "Compare"}</span>
                       </button>
                     </div>
                     <div className="product-info">
@@ -685,24 +687,24 @@ export default function Catalogue({
                       <div className="card-bottom">
                         <div>
                           <small>
-                            Recorded {p.category === "Wings" ? "RRP" : "retail"}{" "}
+                            {p.category === "Wings" ? "RRP" : "Recorded retail"}{" "}
                             {!showEachSize && "from"}
                           </small>
                           <strong>{money(lowest(p, "price"))}</strong>
                         </div>
-                        <Button
-                          variant={added ? "default" : "outline"}
-                          className="compare-button"
-                          onClick={() =>
-                            toggle(p.id, showEachSize ? v.size : undefined)
-                          }
-                          disabled={
-                            !selected.includes(p.id) && selected.length >= 4
-                          }
-                        >
-                          {added ? <Check /> : <GitCompareArrows />}
-                          {added ? "Added" : "Compare"}
-                        </Button>
+                        {p.url &&
+                          p.variants.some((variant) => variant.forSale) && (
+                            <a
+                              className="card-shop-link"
+                              href={p.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`View ${cardName} on Flybubble`}
+                            >
+                              View on Flybubble
+                              <ExternalLink size={13} />
+                            </a>
+                          )}
                       </div>
                     </div>
                   </article>
