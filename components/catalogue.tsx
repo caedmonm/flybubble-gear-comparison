@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import {
   ArrowDownUp,
@@ -17,34 +17,34 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Wind,
-} from 'lucide-react';
+} from "lucide-react";
 
-import { Switch } from '@/components/ui/switch';
-import { catalogueItems } from '@/shared/catalogue-view.mjs';
-import { Button } from '@/components/ui/button';
+import { Switch } from "@/components/ui/switch";
+import { catalogueItems } from "@/shared/catalogue-view.mjs";
+import { Button } from "@/components/ui/button";
 
-import { Input } from '@/components/ui/input';
+import { Input } from "@/components/ui/input";
 
-import { NativeSelect } from '@/components/ui/native-select';
+import { NativeSelect } from "@/components/ui/native-select";
 
-import Comparison from '@/components/comparison';
-import CatalogueFilters from '@/components/catalogue-filters';
-import { catalogueFacets } from '@/shared/facets.mjs';
-import { emptyReserveFilters } from '@/components/catalogue-filters/reserve-state';
+import Comparison from "@/components/comparison";
+import CatalogueFilters from "@/components/catalogue-filters";
+import { catalogueFacets } from "@/shared/facets.mjs";
+import { emptyReserveFilters } from "@/components/catalogue-filters/reserve-state";
 import {
   hasCatalogueUrlState,
   readUrlFilters,
   readUrlSelection,
   readCatalogueSelection,
   writeCatalogueUrl,
-} from '@/shared/catalogue-url.mjs';
-import ShareLinkButton from '@/components/share-link-button';
+} from "@/shared/catalogue-url.mjs";
+import ShareLinkButton from "@/components/share-link-button";
 
-import { ProductImage, money, spec } from '@/components/gear-ui';
+import { ProductImage, money, spec } from "@/components/gear-ui";
 
-import { filterCatalogue, minimum as lowest } from '@/shared/filter.mjs';
+import { filterCatalogue, minimum as lowest } from "@/shared/filter.mjs";
 
-import type { Product } from '@/shared/types';
+import type { Product } from "@/shared/types";
 
 export default function Catalogue({
   initialProducts,
@@ -52,13 +52,13 @@ export default function Catalogue({
   initialSearch,
 }: {
   initialProducts: Product[];
-  category: 'Wings' | 'Reserves';
+  category: "Wings" | "Reserves";
   initialSearch?: string;
 }) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
@@ -68,34 +68,35 @@ export default function Catalogue({
     null,
   );
   const [cellsRange, setCellsRange] = useState<number[] | null>(null);
-  const [certScheme, setCertScheme] = useState('EN');
+  const [dgac, setDgac] = useState("");
+  const [certScheme, setCertScheme] = useState("EN");
   const [weightRange, setWeightRange] = useState<number[] | null>(null);
   const [constructions, setConstructions] = useState<string[]>([]);
   const [reserveFilters, setReserveFilters] = useState(emptyReserveFilters);
 
-  const [cert, setCert] = useState('All');
+  const [cert, setCert] = useState<string[]>([]);
 
-  const [sort, setSort] = useState('name');
+  const [sort, setSort] = useState("name");
   const [showEachSize, setShowEachSize] = useState(false);
 
   const [selected, setSelected] = useState<string[]>([]);
 
   const [limit, setLimit] = useState(24);
 
-  const [maxPrice, setMaxPrice] = useState(''),
-    [allUpWeight, setAllUpWeight] = useState('');
+  const [maxPrice, setMaxPrice] = useState(""),
+    [allUpWeight, setAllUpWeight] = useState("");
 
   const [forSaleOnly, setForSaleOnly] = useState(false);
 
-  const [modelStatus, setModelStatus] = useState('All'),
+  const [modelStatus, setModelStatus] = useState("All"),
     [compareOpen, setCompareOpen] = useState(false),
     [details, setDetails] = useState<Product | null>(null);
 
   const [sizes, setSizes] = useState<Record<string, string>>({}),
     [ready, setReady] = useState(false);
 
-  const [source, setSource] = useState('snapshot'),
-    [notice, setNotice] = useState('');
+  const [source, setSource] = useState("snapshot"),
+    [notice, setNotice] = useState("");
 
   const selection = selected
     .map((id) => products.find((p) => p.id === id))
@@ -104,7 +105,7 @@ export default function Catalogue({
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch('/api/catalogue', { signal: controller.signal })
+    fetch("/api/catalogue", { signal: controller.signal })
       .then((r) => {
         if (!r.ok) throw new Error();
         return r.json() as Promise<{
@@ -121,8 +122,8 @@ export default function Catalogue({
         }
       })
       .catch((e) => {
-        if (e.name !== 'AbortError')
-          setNotice('The API could not be reached. Showing the SQL snapshot.');
+        if (e.name !== "AbortError")
+          setNotice("The API could not be reached. Showing the SQL snapshot.");
       });
 
     function restoreUrl(initial = false) {
@@ -139,16 +140,17 @@ export default function Catalogue({
       setCellsRange(filters.cellsRange);
       setCertScheme(filters.certScheme);
       setCert(filters.cert);
+      setDgac(filters.dgac);
       const legacyWeight =
-        category === 'Wings'
+        category === "Wings"
           ? filters.wingMaxWeight
           : filters.reserveFilters.maxWeightGrams;
       setWeightRange(
         filters.weightRange ||
-          (legacyWeight !== '' &&
+          (legacyWeight !== "" &&
           Number.isFinite(Number(legacyWeight)) &&
           Number(legacyWeight) >= 0
-            ? [0, Number(legacyWeight) / (category === 'Wings' ? 1 : 1000)]
+            ? [0, Number(legacyWeight) / (category === "Wings" ? 1 : 1000)]
             : null),
       );
       setConstructions(filters.constructions);
@@ -158,18 +160,18 @@ export default function Catalogue({
       setForSaleOnly(filters.forSaleOnly);
       setSort(filters.sort);
       setShowEachSize(filters.showEachSize);
-      setReserveFilters({ ...filters.reserveFilters, maxWeightGrams: '' });
+      setReserveFilters({ ...filters.reserveFilters, maxWeightGrams: "" });
       setDetails(null);
 
-      let raw = params.get('selection');
+      let raw = params.get("selection");
       if (initial && !hasCatalogueUrlState(params)) {
         try {
-          raw = localStorage.getItem('flybubble-shortlist-v1');
+          raw = localStorage.getItem("flybubble-shortlist-v1");
         } catch {
           /* Storage can be disabled. */
         }
       }
-      const entries = params.has('item')
+      const entries = params.has("item")
         ? readCatalogueSelection(params, initialProducts)
         : readUrlSelection(raw, initialProducts);
       setSelected(entries.map((entry) => entry.id));
@@ -178,15 +180,15 @@ export default function Catalogue({
       );
       // Links predating the view parameter opened the comparison directly.
       const open =
-        (params.has('selection') || params.has('item')) &&
-        params.get('view') !== 'search' &&
+        (params.has("selection") || params.has("item")) &&
+        params.get("view") !== "search" &&
         entries.length > 0;
       setCompareOpen(open);
       const first = initialProducts.find(
         (product) => product.id === entries[0]?.id,
       );
       if (open && first && first.category !== category) {
-        const path = first.category === 'Reserves' ? '/reserves' : '/wings';
+        const path = first.category === "Reserves" ? "/reserves" : "/wings";
         router.replace(`${path}?${params}`);
         return;
       }
@@ -195,10 +197,10 @@ export default function Catalogue({
 
     restoreUrl(true);
     const onPopState = () => restoreUrl();
-    window.addEventListener('popstate', onPopState);
+    window.addEventListener("popstate", onPopState);
     return () => {
       controller.abort();
-      window.removeEventListener('popstate', onPopState);
+      window.removeEventListener("popstate", onPopState);
     };
   }, [initialProducts, category, router, initialSearch]);
 
@@ -218,9 +220,10 @@ export default function Catalogue({
         cellsRange,
         certScheme,
         cert,
+        dgac,
         weightRange,
         constructions,
-        wingMaxWeight: '',
+        wingMaxWeight: "",
         maxPrice,
         allUpWeight,
         modelStatus,
@@ -238,13 +241,13 @@ export default function Catalogue({
       open,
     );
     // An explicit search view keeps empty shared searches independent of device storage.
-    params.set('view', open ? 'compare' : 'search');
+    params.set("view", open ? "compare" : "search");
     const shareCategory = open
       ? products.find((product) => product.id === entries[0]?.id)?.category ||
         category
       : category;
     return new URL(
-      `${shareCategory === 'Wings' ? '/wings' : '/reserves'}?${params}`,
+      `${shareCategory === "Wings" ? "/wings" : "/reserves"}?${params}`,
       window.location.origin,
     );
   }
@@ -253,7 +256,7 @@ export default function Catalogue({
     if (ready) {
       try {
         localStorage.setItem(
-          'flybubble-shortlist-v1',
+          "flybubble-shortlist-v1",
           JSON.stringify(selected.map((id) => ({ id, size: sizes[id] }))),
         );
       } catch {
@@ -277,6 +280,7 @@ export default function Catalogue({
       weightRange,
       constructions,
       cert,
+      dgac,
       category,
       maxPrice,
       reserveFilters,
@@ -297,14 +301,15 @@ export default function Catalogue({
       aspectRatioRange,
       cellsRange,
       cert,
+      dgac,
       query,
       sort,
       modelStatus,
       forSaleOnly,
-      maxPrice: category === 'Wings' ? maxPrice : '',
+      maxPrice: category === "Wings" ? maxPrice : "",
       weightRange,
       constructions,
-      allUpWeight: category === 'Wings' ? allUpWeight : '',
+      allUpWeight: category === "Wings" ? allUpWeight : "",
       reserve: reserveFilters,
     }),
     [
@@ -317,6 +322,7 @@ export default function Catalogue({
       aspectRatioRange,
       cellsRange,
       cert,
+      dgac,
       query,
       sort,
       modelStatus,
@@ -351,15 +357,16 @@ export default function Catalogue({
     setAreaRange(null);
     setAspectRatioRange(null);
     setCellsRange(null);
-    setCertScheme('EN');
+    setCertScheme("EN");
+    setDgac("");
     setWeightRange(null);
     setConstructions([]);
-    setCert('All');
-    setQuery('');
-    setMaxPrice('');
+    setCert([]);
+    setQuery("");
+    setMaxPrice("");
     setReserveFilters(emptyReserveFilters());
-    setAllUpWeight('');
-    setModelStatus('All');
+    setAllUpWeight("");
+    setModelStatus("All");
     setForSaleOnly(false);
   };
 
@@ -379,7 +386,7 @@ export default function Catalogue({
       product.category !== selection[0].category
     ) {
       setNotice(
-        'Compare one equipment category at a time. Clear your shortlist to start a new comparison.',
+        "Compare one equipment category at a time. Clear your shortlist to start a new comparison.",
       );
       return;
     }
@@ -423,8 +430,8 @@ export default function Catalogue({
         <div className="category-tabs" aria-label="Equipment categories">
           <Link
             href="/wings"
-            aria-current={category === 'Wings' ? 'page' : undefined}
-            className={category === 'Wings' ? 'active' : ''}
+            aria-current={category === "Wings" ? "page" : undefined}
+            className={category === "Wings" ? "active" : ""}
           >
             {/* <Wind size={20} /> */}
             Wings
@@ -432,8 +439,8 @@ export default function Catalogue({
           </Link>
           <Link
             href="/reserves"
-            aria-current={category === 'Reserves' ? 'page' : undefined}
-            className={category === 'Reserves' ? 'active' : ''}
+            aria-current={category === "Reserves" ? "page" : undefined}
+            className={category === "Reserves" ? "active" : ""}
           >
             {/* <ShieldCheck size={19} />  */}
             Reserves
@@ -454,7 +461,7 @@ export default function Catalogue({
             }}
           />
           {query && (
-            <button aria-label="Clear search" onClick={() => setQuery('')}>
+            <button aria-label="Clear search" onClick={() => setQuery("")}>
               ×
             </button>
           )}
@@ -465,7 +472,7 @@ export default function Catalogue({
         {notice && (
           <div className="notice" role="status">
             {notice}
-            <button onClick={() => setNotice('')} aria-label="Dismiss notice">
+            <button onClick={() => setNotice("")} aria-label="Dismiss notice">
               ×
             </button>
           </div>
@@ -488,6 +495,8 @@ export default function Catalogue({
               colours={colours}
               certScheme={certScheme}
               cert={cert}
+              dgac={dgac}
+              setDgac={setDgac}
               allUpWeight={allUpWeight}
               weightRange={weightRange}
               constructions={constructions}
@@ -520,22 +529,22 @@ export default function Catalogue({
           <div className="results">
             <div className="results-toolbar">
               <p>
-                <strong>{items.length}</strong>{' '}
+                <strong>{items.length}</strong>{" "}
                 {showEachSize
-                  ? category === 'Wings'
-                    ? 'wing sizes'
-                    : 'reserve sizes'
-                  : category === 'Wings'
-                    ? 'wings'
-                    : 'reserves'}{' '}
-                to explore{' '}
+                  ? category === "Wings"
+                    ? "wing sizes"
+                    : "reserve sizes"
+                  : category === "Wings"
+                    ? "wings"
+                    : "reserves"}{" "}
+                to explore{" "}
                 <span>
-                  ·{' '}
-                  {modelStatus === 'All'
-                    ? 'All models'
-                    : modelStatus === 'Current'
-                      ? 'Current models'
-                      : 'Past models'}
+                  ·{" "}
+                  {modelStatus === "All"
+                    ? "All models"
+                    : modelStatus === "Current"
+                      ? "Current models"
+                      : "Past models"}
                 </span>
               </p>
               <ShareLinkButton
@@ -579,10 +588,10 @@ export default function Catalogue({
                 const added =
                   selected.includes(p.id) &&
                   (!showEachSize || sizes[p.id] === v.size);
-                const cardName = `${p.brand} ${p.model}${showEachSize ? `, size ${v.size}` : ''}`;
+                const cardName = `${p.brand} ${p.model}${showEachSize ? `, size ${v.size}` : ""}`;
                 return (
                   <article
-                    className={`product-card ${added ? 'is-selected' : ''}`}
+                    className={`product-card ${added ? "is-selected" : ""}`}
                     key={showEachSize ? v.id : p.id}
                   >
                     <button
@@ -593,18 +602,18 @@ export default function Catalogue({
                     <div className="product-photo">
                       <ProductImage product={p} />
                       <span className="cert-badge">
-                        {p.category === 'Wings'
+                        {p.category === "Wings"
                           ? v.certification
                             ? v.certClass && !/EN/i.test(v.certification)
                               ? `EN ${v.certification}`
                               : v.certification
-                            : 'Not recorded'
-                          : v.type || 'Reserve'}
+                            : "Not recorded"
+                          : v.type || "Reserve"}
                       </span>
                       <button
-                        aria-label={`${added ? 'Remove' : 'Add'} ${cardName} ${added ? 'from' : 'to'} comparison`}
+                        aria-label={`${added ? "Remove" : "Add"} ${cardName} ${added ? "from" : "to"} comparison`}
                         aria-pressed={added}
-                        className={`quick-add ${added ? 'checked' : ''}`}
+                        className={`quick-add ${added ? "checked" : ""}`}
                         onClick={() =>
                           toggle(p.id, showEachSize ? v.size : undefined)
                         }
@@ -632,9 +641,9 @@ export default function Catalogue({
                       </h2>
                       <p className="product-type">
                         {v.type ||
-                          (p.category === 'Wings'
-                            ? 'Paragliding wing'
-                            : 'Reserve parachute')}{' '}
+                          (p.category === "Wings"
+                            ? "Paragliding wing"
+                            : "Reserve parachute")}{" "}
                         {!showEachSize && (
                           <span>· {p.variants.length} matching sizes</span>
                         )}
@@ -642,44 +651,44 @@ export default function Catalogue({
                       <div className="key-specs">
                         <div>
                           <span>
-                            <Feather size={12} />{' '}
-                            {showEachSize ? 'Weight' : 'Weight from'}
+                            <Feather size={12} />{" "}
+                            {showEachSize ? "Weight" : "Weight from"}
                           </span>
-                          <strong>{spec(lowest(p, 'weight'), ' kg')}</strong>
+                          <strong>{spec(lowest(p, "weight"), " kg")}</strong>
                         </div>
                         <div>
                           <span>
-                            {p.category === 'Wings'
-                              ? 'Aspect ratio'
-                              : 'Max load'}
+                            {p.category === "Wings"
+                              ? "Aspect ratio"
+                              : "Max load"}
                           </span>
                           <strong>
-                            {p.category === 'Wings'
+                            {p.category === "Wings"
                               ? spec(v.aspectRatio)
-                              : spec(v.maxLoad, ' kg')}
+                              : spec(v.maxLoad, " kg")}
                           </strong>
                         </div>
                         <div>
                           <span>
-                            {p.category === 'Wings' ? 'Cells' : 'Sink rate'}
+                            {p.category === "Wings" ? "Cells" : "Sink rate"}
                           </span>
                           <strong>
-                            {p.category === 'Wings'
+                            {p.category === "Wings"
                               ? spec(v.cells)
-                              : spec(v.sinkRate, ' m/s')}
+                              : spec(v.sinkRate, " m/s")}
                           </strong>
                         </div>
                       </div>
                       <div className="card-bottom">
                         <div>
                           <small>
-                            Recorded {p.category === 'Wings' ? 'RRP' : 'retail'}{' '}
-                            {!showEachSize && 'from'}
+                            Recorded {p.category === "Wings" ? "RRP" : "retail"}{" "}
+                            {!showEachSize && "from"}
                           </small>
-                          <strong>{money(lowest(p, 'price'))}</strong>
+                          <strong>{money(lowest(p, "price"))}</strong>
                         </div>
                         <Button
-                          variant={added ? 'default' : 'outline'}
+                          variant={added ? "default" : "outline"}
                           className="compare-button"
                           onClick={() =>
                             toggle(p.id, showEachSize ? v.size : undefined)
@@ -689,7 +698,7 @@ export default function Catalogue({
                           }
                         >
                           {added ? <Check /> : <GitCompareArrows />}
-                          {added ? 'Added' : 'Compare'}
+                          {added ? "Added" : "Compare"}
                         </Button>
                       </div>
                     </div>
@@ -718,9 +727,19 @@ export default function Catalogue({
             )}
 
             <p className="catalogue-disclaimer">
-              Specifications vary by size. Recorded prices are a guide, not a
-              live offer. Check the manufacturer’s documentation and seek
-              qualified advice before choosing flying equipment.
+              Specifications vary by size. Recorded prices and product data is
+              provided in good faith as a useful tool, errors may exist and 100%
+              accuracy isn't guaranteed. We should advise pilots to consult a
+              gear expert for professional advice before buying.
+            </p>
+            <p className="catalogue-terms">
+              <a
+                href="https://flybubble.com/policies/terms-of-service"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Service
+              </a>
             </p>
           </div>
         </div>

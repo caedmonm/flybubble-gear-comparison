@@ -27,7 +27,8 @@ test('every filter survives sharing, including decimal ranges and reserve limits
     aspectRatioRange: [4.5, 6.01],
     cellsRange: [40, 70],
     certScheme: 'LTF',
-    cert: 'B',
+    cert: ['A', 'B'],
+    dgac: 'Yes',
     wingMaxWeight: '4.5',
     maxPrice: '3000',
     allUpWeight: '85',
@@ -172,4 +173,37 @@ test('saved links reject external URLs and non-catalogue paths', () => {
     '/wings?brand=Ozone&sort=weight',
   );
   assert.throws(() => validateShareTarget(`/wings?query=${'x'.repeat(8192)}`));
+});
+
+test('certification links restore multiple ratings and legacy single ratings', () => {
+  const read = (query) => readUrlFilters(new URLSearchParams(query)).cert;
+  assert.deepEqual(read('cert=B'), ['B']);
+  assert.deepEqual(read('cert=All'), []);
+  assert.deepEqual(read('cert=A&cert=B&cert=A&cert=invalid'), ['A', 'B']);
+  assert.deepEqual(read('certScheme=Other'), ['CCC']);
+  for (const cert of [[], ['CCC', 'Uncertified']]) {
+    const state = { ...defaultUrlFilters(), certScheme: 'Other', cert };
+    assert.deepEqual(
+      readUrlFilters(
+        writeCatalogueUrl(new URLSearchParams(), state, [], false),
+      ),
+      state,
+    );
+  }
+});
+
+test('DGAC is independent and legacy DGAC-only links are preserved', () => {
+  const legacy = readUrlFilters(new URLSearchParams('certScheme=DGAC'));
+  assert.equal(legacy.dgac, 'Yes');
+  assert.equal(legacy.certScheme, 'EN');
+  assert.deepEqual(legacy.cert, []);
+  for (const dgac of ['', 'Yes', 'No']) {
+    const state = { ...defaultUrlFilters(), cert: ['A', 'B'], dgac };
+    assert.deepEqual(
+      readUrlFilters(
+        writeCatalogueUrl(new URLSearchParams(), state, [], false),
+      ),
+      state,
+    );
+  }
 });

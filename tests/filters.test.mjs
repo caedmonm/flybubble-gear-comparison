@@ -194,3 +194,18 @@ test('malformed source weights do not stretch the gear weight slider or produce 
   const corrected = buildCatalogue({WingsData:[{Make:'Skywalk',Model:'ARAK AIR',Size:'L',Gliderwt:3.7}]});
   assert.equal(filterCatalogue(corrected, {weightRange:[3,4]}).length,1);
 });
+
+
+test('multiple certification classes combine with DGAC on the same size', () => {
+  const catalogue = buildCatalogue({WingsData: [
+    {Make:'Test', Model:'Mixed', Size:'S', CertEN:'A'},
+    {Make:'Test', Model:'Mixed', Size:'L', CertEN:'C', CertDGAC:'Yes'},
+    {Make:'Test', Model:'Motor', Size:'M', CertEN:'B', CertDGAC:'Yes'},
+  ]});
+  const sizes = filters => filterCatalogue(catalogue, filters).flatMap(p => p.variants.map(v => `${p.model} ${v.size}`)).sort();
+  assert.deepEqual(sizes({cert:['A','B']}), ['Mixed S','Motor M']);
+  assert.deepEqual(sizes({cert:['A','B'], dgac:'Yes'}), ['Motor M']);
+  assert.deepEqual(sizes({cert:['A','B'], dgac:'No'}), ['Mixed S']);
+  assert.deepEqual(sizes({cert:[], dgac:'Yes'}), ['Mixed L','Motor M']);
+  assert.deepEqual(sizes({cert:['C'], dgac:'No'}), []);
+});

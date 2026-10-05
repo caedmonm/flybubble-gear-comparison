@@ -8,7 +8,8 @@ export type CatalogueFilterProps = {
   filterSizes: string[];
   colours: string[];
   certScheme: string;
-  cert: string;
+  cert: string[];
+  dgac: string;
   allUpWeight: string;
   weightRange: number[] | null;
   constructions: string[];
@@ -28,8 +29,9 @@ export type CatalogueFilterProps = {
   setSelectedBrands: (value: string[]) => void;
   setFilterSizes: (value: string[]) => void;
   setColours: (value: string[]) => void;
+  setDgac: (value: string) => void;
   setCertScheme: (value: string) => void;
-  setCert: (value: string) => void;
+  setCert: (value: string[]) => void;
   setAllUpWeight: (value: string) => void;
   setWeightRange: (value: number[] | null) => void;
   setConstructions: (value: string[]) => void;

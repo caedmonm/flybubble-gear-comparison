@@ -1,17 +1,25 @@
 'use client';
 
-import { NativeSelect } from '@/components/ui/native-select';
+import { MultiSelectFilter } from '@/components/filter-controls';
 import type { CatalogueFilterProps } from './types';
 
 export default function CertificationFilter({
   facets,
   certScheme,
   cert,
+  dgac,
   setCertScheme,
   setCert,
+  setDgac,
 }: Pick<
   CatalogueFilterProps,
-  'facets' | 'certScheme' | 'cert' | 'setCertScheme' | 'setCert'
+  | 'facets'
+  | 'certScheme'
+  | 'cert'
+  | 'dgac'
+  | 'setCertScheme'
+  | 'setCert'
+  | 'setDgac'
 >) {
   return (
     <section className="certification-filter">
@@ -20,24 +28,22 @@ export default function CertificationFilter({
         className="cert-options cert-schemes"
         aria-label="Certification scheme"
       >
-        {['EN', 'LTF', 'DGAC', 'Other']
+        {['EN', 'LTF', 'Other']
           .filter(
             (scheme) =>
               scheme === certScheme ||
-              (scheme === 'DGAC'
-                ? facets.certifications.DGAC
-                : facets.certifications[scheme as 'EN' | 'LTF' | 'Other']
-                    .length > 0),
+              facets.certifications[scheme as 'EN' | 'LTF' | 'Other'].length >
+                0,
           )
           .map((scheme) => (
             <button
               key={scheme}
               aria-pressed={scheme === certScheme}
+              className={scheme === certScheme ? 'selected' : ''}
               onClick={() => {
                 setCertScheme(scheme);
-                setCert(scheme === 'Other' ? 'CCC' : 'All');
+                setCert([]);
               }}
-              className={scheme === certScheme ? 'selected' : ''}
             >
               {scheme}
             </button>
@@ -50,39 +56,61 @@ export default function CertificationFilter({
         >
           {['All', 'A', 'B', 'C', 'D']
             .filter(
-              (c) =>
-                c === 'All' ||
-                c === cert ||
-                facets.certifications[certScheme as 'EN' | 'LTF'].includes(c),
+              (rating) =>
+                rating === 'All' ||
+                cert.includes(rating) ||
+                facets.certifications[certScheme as 'EN' | 'LTF'].includes(
+                  rating,
+                ),
             )
-            .map((c) => (
+            .map((rating) => (
               <button
-                key={c}
-                onClick={() => setCert(c)}
-                aria-pressed={c === cert}
-                className={c === cert ? 'selected' : ''}
+                key={rating}
+                aria-pressed={
+                  rating === 'All' ? !cert.length : cert.includes(rating)
+                }
+                className={
+                  (rating === 'All' ? !cert.length : cert.includes(rating))
+                    ? 'selected'
+                    : ''
+                }
+                onClick={() =>
+                  setCert(
+                    rating === 'All'
+                      ? []
+                      : cert.includes(rating)
+                        ? cert.filter((value) => value !== rating)
+                        : [...cert, rating],
+                  )
+                }
               >
-                {c}
+                {rating}
               </button>
             ))}
         </fieldset>
       )}
       {certScheme === 'Other' && (
-        <NativeSelect
-          aria-label="Other certification"
+        <MultiSelectFilter
+          label="Other certifications"
+          options={facets.certifications.Other}
           value={cert}
-          onChange={(event) => setCert(event.target.value)}
-        >
-          {[...new Set([...facets.certifications.Other, cert])].map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </NativeSelect>
+          onChange={setCert}
+          placeholder="All other certifications"
+        />
       )}
-      <p className="filter-hint">
-        {certScheme === 'DGAC'
-          ? 'Wings with recorded DGAC certification.'
-          : 'Compare the certification for each size.'}
-      </p>
+      <h3 style={{ marginTop: '13px' }}>DGAC (Paramotor)</h3>
+      <fieldset className="cert-options" aria-label="DGAC certification">
+        {['', 'Yes', 'No'].map((value) => (
+          <button
+            key={value}
+            aria-pressed={dgac === value}
+            className={dgac === value ? 'selected' : ''}
+            onClick={() => setDgac(value)}
+          >
+            {value || 'Any'}
+          </button>
+        ))}
+      </fieldset>
     </section>
   );
 }

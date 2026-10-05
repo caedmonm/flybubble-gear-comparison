@@ -45,12 +45,15 @@ function specificationValue(product, variant, field) {
   return variant[field];
 }
 function matchesCertification(variant, filters) {
-  const rating = filters.cert;
+  const ratings = (Array.isArray(filters.cert) ? filters.cert : [filters.cert])
+    .filter(rating => rating && rating !== 'All');
   switch (filters.certScheme || 'EN') {
-    case 'LTF': return !rating || rating === 'All' ? !!variant.ltf && !/^(?:none|[-–])$/i.test(variant.ltf) : variant.ltfClass === rating;
+    case 'LTF': return ratings.length ? ratings.includes(variant.ltfClass) : !!variant.ltf && !/^(?:none|[-–])$/i.test(variant.ltf);
     case 'DGAC': return variant.dgac === true;
-    case 'Other': return variant.otherCertifications?.includes(rating) || false;
-    default: return !rating || rating === 'All' || variant.certClass === rating;
+    case 'Other': return ratings.length
+      ? ratings.some(rating => variant.otherCertifications?.includes(rating))
+      : !!variant.otherCertifications?.length;
+    default: return !ratings.length || ratings.includes(variant.certClass);
   }
 }
 export function matchingVariants(product, filters = {}) {
@@ -60,6 +63,7 @@ export function matchingVariants(product, filters = {}) {
     (product.category !== 'Reserves' || matchesReserve(v, filters.reserve)) &&
     (product.category !== 'Wings' || (
       matchesCertification(v, filters) &&
+      (!filters.dgac || (filters.dgac === 'Yes' ? v.dgac === true : v.dgac === false)) &&
       matchesAny(filters.sizes, v.size) &&
       inRange(specificationValue(product, v, 'area'), filters.areaRange) &&
       inRange(v.aspectRatio, filters.aspectRatioRange) &&

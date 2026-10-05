@@ -28,7 +28,8 @@ export function defaultUrlFilters() {
     aspectRatioRange: /** @type {number[] | null} */ (null),
     cellsRange: /** @type {number[] | null} */ (null),
     certScheme: 'EN',
-    cert: 'All',
+    dgac: '',
+    cert: /** @type {string[]} */ ([]),
     wingMaxWeight: '',
     maxPrice: '',
     allUpWeight: '',
@@ -45,6 +46,7 @@ const lists = {
   filterSizes: 'size',
   colours: 'colour',
   constructions: 'construction',
+  cert: 'cert',
 };
 const ranges = {
   weightRange: 'weight',
@@ -55,7 +57,7 @@ const ranges = {
 const strings = [
   'query',
   'certScheme',
-  'cert',
+  'dgac',
   'wingMaxWeight',
   'maxPrice',
   'allUpWeight',
@@ -120,8 +122,17 @@ export function readUrlFilters(params) {
   const ratings =
     filters.certScheme === 'Other'
       ? ['CCC', 'Load Test Only', 'Uncertified']
-      : ['All', 'A', 'B', 'C', 'D'];
-  if (!ratings.includes(filters.cert)) filters.cert = ratings[0];
+      : ['A', 'B', 'C', 'D'];
+  filters.cert = filters.cert.filter((rating) => ratings.includes(rating));
+  if (!['Yes', 'No'].includes(filters.dgac)) filters.dgac = '';
+  if (filters.certScheme === 'Other' && !params.has('cert'))
+    filters.cert = ['CCC'];
+  // Preserve legacy DGAC-only links with the independent DGAC filter.
+  if (filters.certScheme === 'DGAC') {
+    filters.certScheme = 'EN';
+    filters.cert = [];
+    filters.dgac = 'Yes';
+  }
   filters.forSaleOnly = params.get('forSale') === '1';
   filters.showEachSize = params.get('eachSize') === '1';
   filters.reserveFilters.types = [
@@ -222,6 +233,8 @@ export function writeCatalogueUrl(existing, filters, selection, compareOpen) {
       a.localeCompare(b),
     ))
       params.append(param, value);
+  if (filters.certScheme === 'Other' && !filters.cert.length)
+    params.set('cert', 'All');
   for (const [key, param] of Object.entries(ranges))
     if (filters[key]) params.set(param, filters[key].join(','));
   for (const key of strings)
