@@ -8,6 +8,8 @@
   border-bottom: 0;
 }
 @theme inline {
+  --text-xs: 0.875rem;
+  --text-sm: 1rem;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -90,7 +92,7 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   padding: 0 4%;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.4px;
 }
 .header {
@@ -121,7 +123,7 @@ a:focus-visible {
   color: #b17c52;
 }
 .wordmark .compare-word {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.5px;
   border-left: 1px solid #d7deda;
   padding-left: 14px;
@@ -133,7 +135,7 @@ a:focus-visible {
   align-items: center;
   gap: 29px;
   height: 100%;
-  font-size: 12px;
+  font-size: 14px;
 }
 .header nav a {
   display: flex;
@@ -157,7 +159,7 @@ a:focus-visible {
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
   color: #73807b;
   margin-left: auto;
 }
@@ -203,7 +205,7 @@ a:focus-visible {
   min-width: 0;
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 1.8px;
   font-weight: 600;
   color: #6d8178;
@@ -220,12 +222,12 @@ h1 > span {
   color: #b4835c;
 }
 .intro p {
-  font-size: 13px;
+  font-size: 14px;
   color: #75807a;
   margin: 0;
 }
 .source-tag {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   border: 1px solid #dce3da;
   border-radius: 6px;
@@ -243,7 +245,7 @@ h1 > span {
 }
 .source-tag small {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 400;
   color: #798278;
 }
@@ -261,7 +263,7 @@ h1 > span {
   border: 0;
   padding: 10px 0;
   color: #ffffffbb;
-  font-size: 13px;
+  font-size: 14px;
   position: relative;
 }
 .category-tabs > a.active {
@@ -281,7 +283,7 @@ h1 > span {
 }
 .category-tabs a span {
   background: #2e2e2e;
-  font-size: 10px;
+  font-size: 13px;
   padding: 3px 7px;
   border-radius: 4px;
 }
@@ -290,7 +292,7 @@ h1 > span {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 10px;
+  font-size: 13px;
   color: #889087;
 }
 .catalogue-layout {
@@ -309,7 +311,7 @@ h1 > span {
   margin: 7px 0 24px;
 }
 .filter-heading h2 {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -319,7 +321,7 @@ h1 > span {
 .filter-heading > button {
   background: none;
   border: none;
-  font-size: 10px;
+  font-size: 13px;
   color: #8b947f;
   padding: 0;
 }
@@ -329,7 +331,7 @@ h1 > span {
   border-bottom: 1px solid var(--border);
 }
 .filters h3 {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   justify-content: space-between;
@@ -341,7 +343,7 @@ h1 > span {
 .filters select {
   height: 37px;
   background: white;
-  font-size: 11px;
+  font-size: 14px;
   border-radius: 5px;
 }
 .cert-options {
@@ -354,7 +356,7 @@ h1 > span {
   background: white;
   border-radius: 4px;
   height: 31px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .cert-options button.selected {
   background: #255b4c;
@@ -362,9 +364,9 @@ h1 > span {
   border-color: #255b4c;
 }
 .filter-hint {
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
-  color: #879087;
+  color: #667465;
   margin: 10px 0 0;
 }
 .guide-card {
@@ -384,12 +386,12 @@ h1 > span {
   font-weight: 400;
 }
 .guide-card p {
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.8;
   color: #73816d;
 }
 .guide-card > span {
-  font-size: 10px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -404,7 +406,7 @@ h1 > span {
 }
 .filter-footnote p {
   margin: 0;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
 }
 .filter-footnote svg {
@@ -425,7 +427,7 @@ h1 > span {
   border: 0;
   box-shadow: none !important;
   height: 40px;
-  font-size: 12px;
+  font-size: 14px;
   padding-left: 10px;
 }
 .search-box > button {
@@ -442,7 +444,7 @@ h1 > span {
   flex-wrap: wrap;
 }
 .results-toolbar p {
-  font-size: 11px;
+  font-size: 14px;
   color: #768171;
   margin: 0;
 }
@@ -450,7 +452,7 @@ h1 > span {
   color: #365143;
 }
 .results-toolbar p > span {
-  font-size: 10px;
+  font-size: 13px;
   color: #8b9288;
   margin-left: 7px;
 }
@@ -466,7 +468,7 @@ h1 > span {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: 13px;
   color: #788374;
   cursor: pointer;
   white-space: nowrap;
@@ -479,7 +481,7 @@ h1 > span {
 }
 .sort-label select {
   border: 0;
-  font-size: 10px;
+  font-size: 13px;
   max-width: 162px;
 }
 .product-grid {
@@ -532,7 +534,7 @@ h1 > span {
   background: #fffef8de;
   border: 1px solid #e5e8df;
   padding: 4px 7px;
-  font-size: 9px;
+  font-size: 12px;
   border-radius: 4px;
   color: #56714c;
 }
@@ -563,13 +565,13 @@ h1 > span {
   align-items: center;
   gap: 10px;
   color: #a9b5a7;
-  font-size: 10px;
+  font-size: 13px;
 }
 .product-info {
   padding: 17px 16px 14px;
 }
 .brand-name {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   color: #83917d;
@@ -585,7 +587,7 @@ h1 > span {
   overflow-wrap: anywhere;
 }
 .product-type {
-  font-size: 10px;
+  font-size: 13px;
   color: #7e877a;
   margin: 0 0 19px;
   white-space: nowrap;
@@ -602,21 +604,27 @@ h1 > span {
   margin-bottom: 19px;
 }
 .key-specs > div {
+  min-width: 0;
   border-right: 1px solid #e9ede5;
 }
 .key-specs > div:last-child {
   border: 0;
 }
 .key-specs span {
-  font-size: 9px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 3px;
-  color: #8f9788;
-  white-space: nowrap;
+  color: #66745f;
+  white-space: normal;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.key-specs span > svg {
+  flex-shrink: 0;
 }
 .key-specs strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   display: block;
   margin-top: 7px;
@@ -630,7 +638,7 @@ h1 > span {
   gap: 6px;
 }
 .card-bottom small {
-  font-size: 8px;
+  font-size: 11px;
   color: #9b9f92;
   display: block;
   margin-bottom: 4px;
@@ -640,7 +648,7 @@ h1 > span {
   font-weight: 500;
 }
 .compare-button {
-  font-size: 10px;
+  font-size: 13px;
   height: 32px;
   border-radius: 5px;
   gap: 5px;
@@ -653,12 +661,12 @@ h1 > span {
 .load-more {
   display: flex;
   margin: 30px auto 20px;
-  font-size: 12px;
+  font-size: 14px;
   height: 38px;
   padding: 0 20px;
 }
 .catalogue-disclaimer {
-  font-size: 10px;
+  font-size: 13px;
   color: #919889;
   line-height: 1.8;
   margin: 25px 0;
@@ -671,7 +679,7 @@ h1 > span {
   padding: 26px 4% 35px;
   border-top: 1px solid var(--border);
   color: #8c9687;
-  font-size: 10px;
+  font-size: 13px;
 }
 .footer > span:first-child {
   font-size: 17px;
@@ -680,7 +688,7 @@ h1 > span {
   color: #738471;
 }
 .footer b {
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 1px;
   margin-left: 8px;
 }
@@ -706,15 +714,15 @@ h1 > span {
   margin-right: auto;
 }
 .comparison-tray strong {
-  font-size: 12px;
+  font-size: 14px;
 }
 .comparison-tray span {
-  font-size: 10px;
+  font-size: 13px;
   color: #8a957f;
 }
 .primary-action {
   height: 38px;
-  font-size: 11px;
+  font-size: 14px;
   padding: 0 17px;
 }
 .empty-state {
@@ -729,7 +737,7 @@ h1 > span {
   font-size: 22px;
 }
 .empty-state p {
-  font-size: 12px;
+  font-size: 14px;
 }
 @media (min-width: 1600px) {
   .product-photo {
@@ -783,7 +791,7 @@ h1 > span {
     gap: 5px;
   }
   .key-specs span {
-    font-size: 8px;
+    font-size: 12px;
   }
   .source-tag {
     margin-left: 12px;
@@ -806,7 +814,7 @@ h1 > span {
   }
   .header nav {
     gap: 15px;
-    font-size: 11px;
+    font-size: 14px;
   }
   .header .compare-word {
     display: none;
@@ -837,7 +845,7 @@ h1 > span {
   }
   .topline {
     height: 25px;
-    font-size: 7px;
+    font-size: 10px;
   }
   .topline span:last-child {
     display: none;
@@ -858,12 +866,12 @@ h1 > span {
     margin-bottom: 26px;
   }
   .intro p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.7;
     max-width: 290px;
   }
   .eyebrow {
-    font-size: 9px;
+    font-size: 12px;
   }
   h1 {
     font-size: 32px;
@@ -873,7 +881,7 @@ h1 > span {
     margin-bottom: 20px;
   }
   .category-tabs > a {
-    font-size: 11px;
+    font-size: 14px;
     gap: 6px;
     white-space: nowrap;
   }
@@ -881,7 +889,7 @@ h1 > span {
     width: 17px;
   }
   .category-tabs a span {
-    font-size: 8px;
+    font-size: 11px;
     padding: 2px 5px;
   }
   .catalogue-layout {
@@ -907,7 +915,7 @@ h1 > span {
     flex: 1;
   }
   .filters h3 {
-    font-size: 10px;
+    font-size: 13px;
     margin-bottom: 8px;
   }
   .filters select {
@@ -931,11 +939,11 @@ h1 > span {
     font-size: 17px;
   }
   .product-type {
-    font-size: 9px;
+    font-size: 12px;
     margin-bottom: 16px;
   }
   .brand-name {
-    font-size: 8px;
+    font-size: 11px;
   }
   .key-specs {
     grid-template-columns: 1fr 1fr;
@@ -957,7 +965,7 @@ h1 > span {
     width: 100%;
   }
   .cert-badge {
-    font-size: 8px;
+    font-size: 11px;
     top: 9px;
     left: 9px;
   }
@@ -971,10 +979,10 @@ h1 > span {
     min-height: 54px;
   }
   .results-toolbar p {
-    font-size: 10px;
+    font-size: 13px;
   }
   .sort-label select {
-    font-size: 9px;
+    font-size: 12px;
     padding-left: 7px;
   }
   .sort-label > svg {
@@ -992,10 +1000,10 @@ h1 > span {
     width: 16px;
   }
   .comparison-tray strong {
-    font-size: 10px;
+    font-size: 13px;
   }
   .comparison-tray > button {
-    font-size: 10px;
+    font-size: 13px;
     padding: 0 8px;
   }
   .footer {
@@ -1005,10 +1013,10 @@ h1 > span {
     display: none;
   }
   .footer > span:last-child {
-    font-size: 8px;
+    font-size: 11px;
   }
   .catalogue-disclaimer {
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1031,14 +1039,14 @@ h1 > span {
 }
 .advanced-filter input {
   height: 36px;
-  font-size: 11px;
+  font-size: 14px;
   background: white;
 }
 .current-toggle {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 11px;
+  font-size: 14px;
 }
 .notice {
   display: flex;
@@ -1050,7 +1058,7 @@ h1 > span {
   background: #fbf4e4;
   border-radius: 6px;
   margin-bottom: 22px;
-  font-size: 12px;
+  font-size: 14px;
   color: #7f683e;
 }
 .notice > button {
@@ -1072,7 +1080,7 @@ h1 > span {
   background: #edf2e9;
   border: 1px solid #dfe7d9;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 12px;
   padding: 5px 8px;
   max-width: 120px;
   overflow: hidden;
@@ -1097,7 +1105,7 @@ h1 > span {
   margin: 0 0 8px;
 }
 .comparison-heading [data-slot="dialog-description"] {
-  font-size: 12px;
+  font-size: 14px;
   color: #7c8774;
 }
 .comparison-tools {
@@ -1110,14 +1118,14 @@ h1 > span {
   display: flex;
   gap: 9px;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
 }
 .comparison-tools > div {
   display: flex;
   gap: 8px;
 }
 .comparison-tools button {
-  font-size: 11px;
+  font-size: 14px;
 }
 .comparison-scroll {
   overflow: auto;
@@ -1136,7 +1144,7 @@ h1 > span {
 .comparison-table th,
 .comparison-table td {
   padding: 13px 18px;
-  font-size: 12px;
+  font-size: 14px;
   white-space: normal;
   min-width: 185px;
   width: 210px;
@@ -1166,13 +1174,13 @@ h1 > span {
 .spec-column small {
   font-weight: 400;
   display: block;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.8;
   color: #8b9681;
   white-space: normal;
 }
 .comparison-table tbody th {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   color: #718169;
   background: #f7f9f3;
@@ -1213,7 +1221,7 @@ h1 > span {
   border-radius: 50%;
 }
 .compare-product-photo .no-photo {
-  font-size: 8px;
+  font-size: 11px;
 }
 .comparison-table h3 {
   font-size: 19px;
@@ -1227,7 +1235,7 @@ h1 > span {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 400;
 }
 .size-picker [data-slot="native-select-wrapper"] {
@@ -1235,10 +1243,10 @@ h1 > span {
   min-width: 0;
 }
 .size-picker select {
-  font-size: 11px;
+  font-size: 14px;
 }
 .shop-link {
-  font-size: 10px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1246,17 +1254,17 @@ h1 > span {
   color: #537e4e;
 }
 .comparison-note {
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.8;
   color: #89947d;
 }
 .identical-note {
   padding: 25px;
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
 }
 .share-fallback {
-  font-size: 10px;
+  font-size: 13px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -1273,7 +1281,7 @@ h1 > span {
   flex-basis: 100%;
 }
 .share-link-control > output {
-  font-size: 12px;
+  font-size: 14px;
 }
 .share-fallback input {
   border: 1px solid #d5dfcd;
@@ -1305,7 +1313,7 @@ h1 > span {
   }
   .current-toggle {
     width: 100%;
-    font-size: 10px;
+    font-size: 13px;
     margin-bottom: 6px;
   }
   .comparison-dialog {
@@ -1318,7 +1326,7 @@ h1 > span {
     font-size: 23px;
   }
   .comparison-heading [data-slot="dialog-description"] {
-    font-size: 11px;
+    font-size: 14px;
     max-width: 90%;
   }
   .comparison-table th,
@@ -1330,11 +1338,11 @@ h1 > span {
     min-width: 125px;
   }
   .comparison-tools > label {
-    font-size: 10px;
+    font-size: 13px;
     gap: 5px;
   }
   .comparison-tools button {
-    font-size: 10px;
+    font-size: 13px;
     padding: 0 7px;
     gap: 5px;
   }
@@ -1342,7 +1350,7 @@ h1 > span {
     width: 12px !important;
   }
   .comparison-note {
-    font-size: 9px;
+    font-size: 12px;
   }
   .comparison-table h3 {
     font-size: 18px;
@@ -1358,7 +1366,7 @@ h1 > span {
     box-shadow: 2px 0 3px #00000006;
   }
   .notice {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 .visual-key {
@@ -1367,7 +1375,7 @@ h1 > span {
   gap: 6px;
   margin-right: 5px;
   color: #81907d;
-  font-size: 9px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.7px;
 }
@@ -1385,7 +1393,7 @@ h1 > span {
   gap: 9px;
 }
 .metric > strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #294d42;
   line-height: 1;
@@ -1395,7 +1403,7 @@ h1 > span {
   color: #9ca599;
 }
 .metric-missing small {
-  font-size: 9px;
+  font-size: 12px;
 }
 .bar-chart,
 .cell-chart,
@@ -1532,7 +1540,7 @@ h1 > span {
   z-index: 1;
   margin-bottom: 3px;
   color: #516e59;
-  font-size: 6px;
+  font-size: 9px;
   font-style: normal;
   letter-spacing: 0.6px;
 }
@@ -1642,7 +1650,7 @@ h1 > span {
 .visual-overview-heading p {
   margin: 0 0 4px;
   color: #778b79;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.5px;
 }
@@ -1655,7 +1663,7 @@ h1 > span {
 .visual-overview-heading > span {
   max-width: 270px;
   color: #849080;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.6;
   text-align: right;
 }
@@ -1686,7 +1694,7 @@ h1 > span {
   min-width: 0;
   overflow: hidden;
   color: #36534a;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1700,11 +1708,11 @@ h1 > span {
   border-radius: 50%;
   background: #edf1e9;
   color: #627461;
-  font-size: 7px;
+  font-size: 10px;
 }
 .chart-product-legend small {
   color: #8a9485;
-  font-size: 8px;
+  font-size: 11px;
 }
 .overview-grid {
   display: grid;
@@ -1728,12 +1736,12 @@ h1 > span {
   margin-bottom: 2px;
 }
 .overview-chart-card figcaption span {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   color: #496156;
 }
 .overview-chart-card figcaption small {
-  font-size: 7px;
+  font-size: 10px;
   color: #9aa296;
   white-space: nowrap;
 }
@@ -1746,12 +1754,12 @@ h1 > span {
   stroke: #e4e9e0;
 }
 .overview-bar-chart .recharts-cartesian-axis-tick text {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   fill: #788779;
 }
 .overview-chart-label {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   fill: #53675f;
 }
@@ -1775,7 +1783,7 @@ h1 > span {
   border-radius: 50%;
   background: #edf1e9;
   color: #637262;
-  font-size: 7px;
+  font-size: 10px;
 }
 .shared-range-track {
   position: relative;
@@ -1799,7 +1807,7 @@ h1 > span {
 .shared-range-chart small {
   text-align: right;
   color: #61736a;
-  font-size: 8px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 .stacked-aspects {
@@ -1823,7 +1831,7 @@ h1 > span {
   border-radius: 50%;
   background: #edf1e9;
   color: #637262;
-  font-size: 7px;
+  font-size: 10px;
 }
 .stacked-aspects > div > i:not(.missing-aspect) {
   position: relative;
@@ -1848,13 +1856,13 @@ h1 > span {
 }
 .stacked-aspects small {
   text-align: right;
-  font-size: 9px;
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 .missing-aspect {
   justify-self: center;
   color: #a0a89e;
-  font-size: 7px;
+  font-size: 10px;
   font-style: normal;
 }
 .comparison-table {
@@ -1919,7 +1927,7 @@ h1 > span {
     min-height: 105px;
   }
   .overview-chart-label {
-    font-size: 7px;
+    font-size: 10px;
   }
 }
 
@@ -1931,7 +1939,7 @@ h1 > span {
 .visual-overview-actions > span {
   max-width: 270px;
   color: #849080;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.6;
   text-align: right;
 }
@@ -1950,7 +1958,7 @@ h1 > span {
   border-radius: 4px;
   background: transparent;
   color: #778678;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.3px;
 }
@@ -2004,7 +2012,7 @@ h1 > span {
   align-items: center;
   gap: 4px;
   color: #68796f;
-  font-size: 8px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .overlay-aspect-values > span > i {
@@ -2049,7 +2057,7 @@ h1 > span {
   grid-template-columns: 15px 1fr 60px;
 }
 .stacked-aspects small {
-  font-size: 8px;
+  font-size: 11px;
   white-space: nowrap;
 }
 
@@ -2088,7 +2096,7 @@ h1 > span {
   border-radius: 5px;
   background: #255b4c;
   color: white;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
   transition:
@@ -2103,7 +2111,7 @@ h1 > span {
   display: block;
   margin-top: 6px;
   color: #8a927f;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 500;
   text-align: center;
 }
@@ -2125,7 +2133,7 @@ h1 > span {
   border-radius: 4px;
   background: #f1f7ed;
   color: #315e43;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -2135,7 +2143,7 @@ h1 > span {
 .price-with-cta > small {
   flex-basis: 100%;
   color: #75876e;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 500;
 }
 
@@ -2151,7 +2159,7 @@ h1 > span {
   border: 1px solid var(--border);
   border-radius: 5px;
   background: white;
-  font-size: 11px;
+  font-size: 14px;
   text-align: left;
 }
 .multi-filter-trigger > span {
@@ -2173,13 +2181,13 @@ h1 > span {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 14px;
 }
 .multi-filter-heading button {
   border: 0;
   background: none;
   color: var(--primary);
-  font-size: 11px;
+  font-size: 14px;
 }
 .multi-filter-heading button:disabled {
   opacity: 0.4;
@@ -2196,7 +2204,7 @@ h1 > span {
 .multi-filter-search input {
   border: 0;
   box-shadow: none;
-  font-size: 12px;
+  font-size: 14px;
   height: 34px;
 }
 .multi-filter-options {
@@ -2211,7 +2219,7 @@ h1 > span {
   padding: 9px 6px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   overflow-wrap: anywhere;
 }
 .multi-filter-options label:hover {
@@ -2223,7 +2231,7 @@ h1 > span {
 .multi-filter-options > p,
 .multi-filter-summary {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
   color: #758071;
 }
 .multi-filter-summary {
@@ -2234,20 +2242,20 @@ h1 > span {
   margin-bottom: 10px;
 }
 .cert-schemes button {
-  font-size: 10px;
+  font-size: 13px;
 }
 .range-filter-values {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 10px;
+  font-size: 13px;
   color: #7a8575;
   margin-bottom: 8px;
 }
 .range-filter-values strong {
   margin-left: 4px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--foreground);
   font-variant-numeric: tabular-nums;
@@ -2264,7 +2272,7 @@ h1 > span {
   background: none;
   padding: 5px 0 0;
   color: var(--primary);
-  font-size: 10px;
+  font-size: 13px;
   text-align: left;
 }
 .filters section {
@@ -2311,7 +2319,7 @@ h1 > span {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 10px;
+  font-size: 13px;
   color: #66786a;
 }
 .number-filter-pair input {
@@ -2319,7 +2327,7 @@ h1 > span {
   width: 100%;
 }
 .filter-note {
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.6;
   color: #6c7c6f;
   margin: 10px 0 0;
@@ -2331,7 +2339,7 @@ h1 > span {
   min-width: 0;
 }
 .reserve-load-percentage legend {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -2344,7 +2352,7 @@ h1 > span {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
 }
 .reserve-load-percentage input {
@@ -2355,7 +2363,7 @@ h1 > span {
 }
 .filter-validation {
   color: #a33f2f;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
   margin: 0 0 20px;
 }
