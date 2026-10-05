@@ -417,16 +417,19 @@ export default function Catalogue({
   return (
     <>
       <div className="banner">
-        <a href="https://flybubble.com/" className="banner-logo-link">
-          <Image
-            className="banner-logo"
-            src="/flybubble-logo-white.avif"
-            alt="Flybubble"
-            width={660}
-            height={139}
-            unoptimized
-          />
-        </a>
+        <div className="banner-brand">
+          <a href="https://flybubble.com/" className="banner-logo-link">
+            <Image
+              className="banner-logo"
+              src="/flybubble-logo-white.avif"
+              alt="Flybubble"
+              width={660}
+              height={139}
+              unoptimized
+            />
+          </a>
+          <span className="banner-title">Gear Comparison</span>
+        </div>
         <div className="category-tabs" aria-label="Equipment categories">
           <Link
             href="/wings"
