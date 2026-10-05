@@ -179,14 +179,17 @@ a:focus-visible {
   padding: 12px 4%;
 }
 .banner-brand {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
+  max-width: 100%;
   margin-right: auto;
 }
 .banner-title {
   display: block;
-  margin-top: 5px;
-  font-size: 16px;
-  font-weight: 600;
+  flex-shrink: 0;
+  font-size: 24px;
+  font-weight: 500;
   letter-spacing: 0.02em;
 }
 .banner-logo {
@@ -194,8 +197,8 @@ a:focus-visible {
   width: 280px;
   max-width: 100%;
   height: auto;
-  margin-right: auto;
-  flex-shrink: 0;
+  min-width: 0;
+  flex-shrink: 1;
 }
 .banner .category-tabs {
   flex-shrink: 0;
