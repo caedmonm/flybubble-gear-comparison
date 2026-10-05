@@ -509,7 +509,7 @@ h1 > span {
 }
 .product-photo {
   position: relative;
-  height: 195px;
+  height: 220px;
   background: #f0f3f1;
   display: flex;
   align-items: center;
@@ -519,9 +519,8 @@ h1 > span {
 .product-photo > img {
   height: 100%;
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
   mix-blend-mode: multiply;
-  padding: 17px;
   transition: transform 0.4s;
 }
 .product-card:hover .product-photo > img {
