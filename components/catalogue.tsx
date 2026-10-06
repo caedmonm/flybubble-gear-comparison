@@ -8,12 +8,14 @@ import { useRouter } from "next/navigation";
 import {
   ArrowDownUp,
   ArrowRight,
+  BookOpen,
   Check,
   ChevronRight,
   ExternalLink,
   Feather,
   GitCompareArrows,
   Mountain,
+  Play,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -62,6 +64,7 @@ export default function Catalogue({
   const [query, setQuery] = useState("");
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [wingCategories, setWingCategories] = useState<string[]>([]);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
   const [colours, setColours] = useState<string[]>([]);
   const [areaRange, setAreaRange] = useState<number[] | null>(null);
@@ -135,6 +138,7 @@ export default function Catalogue({
       setQuery(filters.query);
       setSelectedBrands(filters.selectedBrands);
       setFilterSizes(filters.filterSizes);
+      setWingCategories(filters.wingCategories);
       setColours(filters.colours);
       setAreaRange(filters.areaRange);
       setAspectRatioRange(filters.aspectRatioRange);
@@ -215,6 +219,7 @@ export default function Catalogue({
         query,
         selectedBrands,
         filterSizes,
+        wingCategories,
         colours,
         areaRange,
         aspectRatioRange,
@@ -273,6 +278,7 @@ export default function Catalogue({
       showEachSize,
       selectedBrands,
       filterSizes,
+      wingCategories,
       colours,
       areaRange,
       aspectRatioRange,
@@ -296,6 +302,7 @@ export default function Catalogue({
       category,
       brands: selectedBrands,
       sizes: filterSizes,
+      wingCategories,
       colours,
       certScheme,
       areaRange,
@@ -317,6 +324,7 @@ export default function Catalogue({
       category,
       selectedBrands,
       filterSizes,
+      wingCategories,
       colours,
       certScheme,
       areaRange,
@@ -354,6 +362,7 @@ export default function Catalogue({
   const reset = () => {
     setSelectedBrands([]);
     setFilterSizes([]);
+    setWingCategories([]);
     setColours([]);
     setAreaRange(null);
     setAspectRatioRange(null);
@@ -499,6 +508,8 @@ export default function Catalogue({
               brands={brands}
               selectedBrands={selectedBrands}
               filterSizes={filterSizes}
+              wingCategories={wingCategories}
+              setWingCategories={setWingCategories}
               colours={colours}
               certScheme={certScheme}
               cert={cert}
@@ -734,24 +745,70 @@ export default function Catalogue({
               </Button>
             )}
 
-            <p className="catalogue-disclaimer">
-              Specifications vary by size. Recorded prices and product data is
-              provided in good faith as a useful tool, errors may exist and 100%
-              accuracy isn't guaranteed. We should advise pilots to consult a
-              gear expert for professional advice before buying.
-            </p>
-            <p className="catalogue-terms">
-              <a
-                href="https://flybubble.com/policies/terms-of-service"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Terms of Service
-              </a>
-            </p>
           </div>
         </div>
       </main>
+
+      <footer className="catalogue-footer">
+        <div className="catalogue-footer-inner">
+          <div className="footer-resources">
+            <div className="footer-intro">
+              <span className="footer-eyebrow">Flybubble</span>
+              <h2>Trusted Experts in Freeflight</h2>
+              <p>Helping pilots fly better, safer, and longer. With decades of flying experience, we guide pilots of all levels to the right gear, techniques, and knowledge.</p>
+            </div>
+            <div className="footer-links">
+              <div className="footer-resource-links">
+                <a href="https://flybubble.com/pages/knowledge-base" target="_blank" rel="noopener noreferrer">
+                  <BookOpen size={22} aria-hidden="true" />
+                  <span><strong>Knowledge Base</strong><small>Explore our guides and advice</small></span>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+                <a href="https://www.youtube.com/flybubbleparagliding" target="_blank" rel="noopener noreferrer">
+                  <Play size={22} aria-hidden="true" />
+                  <span><strong>Flybubble on YouTube</strong><small>Watch, learn, and get inspired</small></span>
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+                <nav className="footer-social-card" aria-label="Flybubble socials">
+                  <strong>Follow Flybubble</strong>
+                  <div className="footer-socials">
+                <a
+                  href="https://www.facebook.com/flybubble.paragliding/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Flybubble on Facebook (opens in a new tab)"
+                  title="Facebook"
+                >
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M14 22v-9h3l.5-4H14V6.5c0-1.1.3-1.5 1.5-1.5H18V1h-3c-3.4 0-5 2-5 5v3H7v4h3v9z" />
+                  </svg>
+                  <span>Facebook</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/flybubble/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Flybubble on Instagram (opens in a new tab)"
+                  title="Instagram"
+                >
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                  </svg>
+                  <span>Instagram</span>
+                </a>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>Specifications vary by size. Recorded prices and product data are provided in good faith; errors may exist and accuracy isn't guaranteed. Consult a gear expert for professional advice before buying.</p>
+            <a href="https://flybubble.com/policies/terms-of-service" target="_blank" rel="noopener noreferrer">Terms of Service <ExternalLink size={13} aria-hidden="true" /></a>
+          </div>
+        </div>
+      </footer>
 
       {selected.length > 0 && (
         <div className="comparison-tray">

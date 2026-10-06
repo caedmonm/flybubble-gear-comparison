@@ -6,6 +6,8 @@ export type CatalogueFilterProps = {
   brands: string[];
   selectedBrands: string[];
   filterSizes: string[];
+  wingCategories: string[];
+  setWingCategories: (value: string[]) => void;
   colours: string[];
   certScheme: string;
   cert: string[];

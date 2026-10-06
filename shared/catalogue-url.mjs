@@ -21,6 +21,7 @@ export function defaultUrlFilters() {
     query: '',
     selectedBrands: /** @type {string[]} */ ([]),
     filterSizes: /** @type {string[]} */ ([]),
+    wingCategories: /** @type {string[]} */ ([]),
     constructions: /** @type {string[]} */ ([]),
     weightRange: /** @type {number[] | null} */ (null),
     colours: /** @type {string[]} */ ([]),
@@ -44,6 +45,7 @@ export function defaultUrlFilters() {
 const lists = {
   selectedBrands: 'brand',
   filterSizes: 'size',
+  wingCategories: 'wingCategory',
   colours: 'colour',
   constructions: 'construction',
   cert: 'cert',

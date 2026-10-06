@@ -1,3 +1,4 @@
+import { wingCategory, wingCategoryOrder } from './wing-category.mjs';
 import { filterCatalogue, rangeBounds } from './filter.mjs';
 
 // Ignore only a facet's own selection, so it can be broadened again.
@@ -33,6 +34,8 @@ export function catalogueFacets(products, filters) {
       String(a).localeCompare(String(b)),
     ),
     constructions: values(facet(['constructions']), 'construction'),
+    wingCategories: [...new Set(values(facet(['wingCategories']), 'type').map(wingCategory))]
+      .sort((a, b) => wingCategoryOrder.indexOf(a) - wingCategoryOrder.indexOf(b) || a.localeCompare(b)),
     gearWeight: rangeBounds(
       facet(['weightRange', 'maxWeight'], ['maxWeightGrams']),
       'weight',

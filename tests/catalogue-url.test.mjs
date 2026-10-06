@@ -20,6 +20,7 @@ test('every filter survives sharing, including decimal ranges and reserve limits
     query: 'A & B + air',
     selectedBrands: ['Advance', 'Ozone'],
     filterSizes: ['M', 'S'],
+    wingCategories: ['Advanced Paragliders', 'Mini Wings & Parakites'],
     colours: ['Blue / White', 'Red'],
     constructions: ['Lightweight', 'Standard'],
     weightRange: [2.5, 4.1],

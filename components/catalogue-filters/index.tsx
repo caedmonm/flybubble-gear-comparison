@@ -4,6 +4,7 @@ import type { ComponentType } from 'react';
 import type { CatalogueFilterProps } from './types';
 import ConstructionFilter from './construction-filter';
 import BrandFilter from './brand-filter';
+import WingCategoryFilter from './wing-category-filter';
 import SizeFilter from './size-filter';
 import ColourFilter from './colour-filter';
 import CertificationFilter from './certification-filter';
@@ -28,6 +29,7 @@ import ReserveValidation from './reserve-validation';
 
 const filters = {
   Wings: [
+    WingCategoryFilter,
     ModelStatusFilter,
     ForSaleFilter,
     CertificationFilter,

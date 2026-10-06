@@ -1,3 +1,5 @@
+import { wingCategory } from './wing-category.mjs';
+
 // Every active specification filter must match the SAME size variant.
 const matchesAny = (values, value) => !values?.length || values.includes(value);
 const inRange = (value, range) => !range || (typeof value === 'number' && Number.isFinite(value) && value >= range[0] && value <= range[1]);
@@ -62,6 +64,7 @@ export function matchingVariants(product, filters = {}) {
     (!filters.forSaleOnly || v.forSale === true) &&
     (product.category !== 'Reserves' || matchesReserve(v, filters.reserve)) &&
     (product.category !== 'Wings' || (
+      matchesAny(filters.wingCategories, wingCategory(v.type)) &&
       matchesCertification(v, filters) &&
       (!filters.dgac || (filters.dgac === 'Yes' ? v.dgac === true : v.dgac === false)) &&
       matchesAny(filters.sizes, v.size) &&

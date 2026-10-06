@@ -91,7 +91,7 @@ export default function CertificationFilter({
             ))}
         </fieldset>
       )}
-      <h3 style={{ marginTop: '13px' }}>DGAC</h3>
+      <h3 style={{ marginTop: '13px' }}>DGAC (Paramotor)</h3>
       <fieldset className="cert-options" aria-label="DGAC certification">
         {['', 'Yes', 'No'].map((value) => (
           <button
