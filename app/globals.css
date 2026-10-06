@@ -186,11 +186,26 @@ a:focus-visible {
   margin-right: auto;
 }
 .banner-title {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   flex-shrink: 0;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  margin-left: 0px;
+  padding-left: 24px;
+  border-left: 1px solid rgb(255 255 255 / 30%);
+  line-height: 1.1;
+}
+.banner-title-eyebrow {
+  color: rgb(255 255 255 / 78%);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.banner-title-name {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
 .banner-logo {
   display: block;
@@ -869,7 +884,14 @@ h1 > span {
 }
 @media (max-width: 600px) {
   .banner-logo {
-    width: 200px;
+    width: clamp(140px, 42vw, 200px);
+  }
+  .banner-title {
+    margin-left: 16px;
+    padding-left: 16px;
+  }
+  .banner-title-name {
+    font-size: 17px;
   }
   .banner .category-tabs {
     flex-basis: 100%;

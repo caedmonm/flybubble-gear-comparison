@@ -429,7 +429,10 @@ export default function Catalogue({
               unoptimized
             />
           </a>
-          <span className="banner-title">Gear Comparison</span>
+          <span className="banner-title">
+            <span className="banner-title-eyebrow">Gear</span>{" "}
+            <span className="banner-title-name">Comparison</span>
+          </span>
         </div>
         <div className="category-tabs" aria-label="Equipment categories">
           <Link

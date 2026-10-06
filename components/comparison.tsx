@@ -646,8 +646,7 @@ export default function Comparison({
                           target="_blank"
                           rel="noreferrer"
                         >
-                          Check Flybubble Price{" "}
-                          <ExternalLink size={13} />
+                          Check Flybubble Price <ExternalLink size={13} />
                         </a>
                         <small>
                           {wings
@@ -678,9 +677,7 @@ export default function Comparison({
                               products[index],
                               variants[index],
                             ) && (
-                              <>
-                                {wings && <small>Often less than RRP</small>}
-                              </>
+                              <>{wings && <small>Often less than RRP</small>}</>
                             )}
                           </div>
                         ) : (
