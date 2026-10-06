@@ -385,10 +385,10 @@ h1 > span {
   border-color: #255b4c;
 }
 .filter-hint {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.7;
   color: #667465;
-  margin: 10px 0 0;
+  margin: 5px 0 0;
 }
 .guide-card {
   padding: 20px 17px;

@@ -1,6 +1,6 @@
 export default function NumericAvailability({
   bounds,
-  unit = '',
+  unit = "",
 }: {
   bounds: number[] | null;
   unit?: string;
@@ -8,10 +8,11 @@ export default function NumericAvailability({
   return (
     <p className="filter-hint">
       {bounds
-        ? 'Matching specifications: ' +
-          bounds.map((n) => Number(n.toFixed(3))).join('–') +
-          (unit ? ' ' + unit : '')
-        : 'No matching specifications.'}
+        ? "(" +
+          bounds.map((n) => Number(n.toFixed(3))).join("–") +
+          (unit ? " " + unit : "") +
+          ")"
+        : "No matching specifications."}
     </p>
   );
 }
