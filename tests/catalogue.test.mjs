@@ -6,6 +6,7 @@ import { filterCatalogue } from '../shared/filter.mjs';
 import rows from '../data/catalogue-rows.json' with {type:'json'};
 import projection from '../shared/projection.json' with {type:'json'};
 import { createCatalogueService } from '../server/catalogue-service.mjs';
+import { mysqlOptions } from '../server/mysql.mjs';
 const products=buildCatalogue(rows);
 
 test('enabled SQL size records survive grouping without duplicate IDs',()=>{
@@ -69,7 +70,10 @@ test('MySQL mode fails closed when the password is redacted',async()=>{
   const service=createCatalogueService({DATA_SOURCE:'mysql',DB_PASSWORD:'hide'});
   await assert.rejects(service.getCatalogue(),/DB_PASSWORD/);
   const source=await readFile(new URL('../server/catalogue-service.mjs',import.meta.url),'utf8');
-  assert.match(source,/rejectUnauthorized:true/);assert.match(source,/SET TRANSACTION READ ONLY/);assert.match(source,/multipleStatements:false/);
+  assert.match(source,/SET TRANSACTION READ ONLY/);
+  const options=await mysqlOptions({DB_USER:'catalogue',DB_PASSWORD:'fixture',DB_CA_CERT:'test CA'});
+  assert.deepEqual(options.ssl,{rejectUnauthorized:true,ca:'test CA'});
+  assert.equal(options.multipleStatements,false);
 });
 test('snapshot catalogue service returns the public product projection',async()=>{
   const service=createCatalogueService({DATA_SOURCE:'snapshot'});

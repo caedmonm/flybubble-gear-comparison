@@ -1,6 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import mysql from 'mysql2/promise';
+import { databasePool } from './mysql.mjs';
 
 export const shareTableSql = `CREATE TABLE IF NOT EXISTS gear_share_links (
   id CHAR(12) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
@@ -33,37 +32,12 @@ export function validateShareTarget(target) {
 }
 
 export function createShareLinkService(env = process.env) {
-  let pool;
-  function getPool() {
-    pool ||= connect();
-    return pool;
-  }
-  async function connect() {
-    const password = env.SHARE_DB_PASSWORD || env.DB_PASSWORD;
-    if (!password || password === 'hide')
-      throw new Error('Share database is not configured');
-    const ca =
-      env.SHARE_DB_CA_CERT ||
-      env.DB_CA_CERT ||
-      (env.DB_CA_PATH ? await readFile(env.DB_CA_PATH, 'utf8') : undefined);
-    return mysql.createPool({
-      host: env.SHARE_DB_HOST || env.DB_HOST,
-      port: Number(env.SHARE_DB_PORT || env.DB_PORT || 25060),
-      database: env.SHARE_DB_NAME || env.DB_NAME || 'defaultdb',
-      user: env.SHARE_DB_USER || env.DB_USER,
-      password,
-      connectionLimit: 3,
-      queueLimit: 10,
-      connectTimeout: 10000,
-      multipleStatements: false,
-      ssl: { rejectUnauthorized: true, ...(ca ? { ca } : {}) },
-    });
-  }
+  const pool = databasePool(env);
   return {
     async create(target) {
       const canonical = validateShareTarget(target);
       const digest = createHash('sha256').update(canonical).digest('hex');
-      const db = await getPool();
+      const db = await pool.get();
       for (let attempt = 0; attempt < 3; attempt++) {
         const id = randomBytes(9).toString('base64url');
         try {
@@ -91,7 +65,7 @@ export function createShareLinkService(env = process.env) {
     async resolve(id) {
       if (typeof id !== 'string' || !/^[A-Za-z0-9_-]{12}$/.test(id))
         return null;
-      const db = await getPool();
+      const db = await pool.get();
       const [rows] = await db.execute(
         {
           sql: 'SELECT target FROM gear_share_links WHERE id = ? LIMIT 1',
@@ -102,12 +76,10 @@ export function createShareLinkService(env = process.env) {
       return rows.length ? validateShareTarget(rows[0].target) : null;
     },
     async migrate() {
-      const db = await getPool();
+      const db = await pool.get();
       await db.query(shareTableSql);
     },
-    async close() {
-      await (await pool)?.end();
-    },
+    close: pool.close,
   };
 }
 

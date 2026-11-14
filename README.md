@@ -43,7 +43,7 @@ Attach the existing managed database to the app, add the app as a trusted source
 | `DB_CA_CERT` | `${flybubble-db.CA_CERT}` |
 | `SITE_ORIGIN` | `${APP_URL}` |
 
-Use a database user with `SELECT` access only to the four tables in `shared/projection.json`, including `DSColours` for wing colourways. The app validates TLS certificates, disallows multiple SQL statements, runs reads in read-only transactions, and exposes only allowlisted fields. If live MySQL is temporarily unavailable, `/api/catalogue` returns the bundled snapshot with a visible warning instead of taking down the site.
+All MySQL features use these same `DB_*` settings. The public catalogue needs `SELECT` on the four tables in `shared/projection.json` and runs its queries in read-only transactions. Admin imports and shared links use the same account with the write permissions described below. The app validates TLS certificates, disallows multiple SQL statements and exposes only allowlisted fields. If live MySQL is temporarily unavailable, `/api/catalogue` returns the bundled snapshot with a visible warning instead of taking down the site.
 
 DigitalOcean reference: [Node.js buildpack and runtime support](https://docs.digitalocean.com/products/app-platform/reference/buildpacks/nodejs/), [environment and database bindable variables](https://docs.digitalocean.com/products/app-platform/how-to/use-environment-variables/), and [health checks](https://docs.digitalocean.com/products/app-platform/how-to/manage-health-checks/).
 
@@ -51,9 +51,34 @@ DigitalOcean reference: [Node.js buildpack and runtime support](https://docs.dig
 
 Search results and comparisons both have a **Copy link** button. Filters, sorting, shortlisted products, and exact sizes are captured only when sharing. Normal browsing leaves the address bar unchanged. Shared views stay at `/s/<id>` and are stored in MySQL, so they survive deployments and work across instances. Identical saved states reuse the same short link. Older `selection` comparison links remain supported.
 
-Run `yarn db:share-links` once to create the `gear_share_links` table using `.env` / `.env.local` or deployment environment variables. The migration requires CREATE permission. At runtime, grant SELECT and INSERT on that table; catalogue tables can remain read-only. Sharing uses `DB_*` connection settings even when `DATA_SOURCE=snapshot`. Optional `SHARE_DB_*` settings allow a separate database/user. The connection verifies TLS using the configured CA certificate. No database passwords are sent to browsers. If the share database is unavailable, the button reports an error and can be retried.
+Run `yarn db:share-links` once to create the `gear_share_links` table using the shared database settings. The migration requires CREATE permission. At runtime, sharing needs SELECT and INSERT on that table, even when `DATA_SOURCE=snapshot`. If the table is unavailable, the button reports an error and can be retried.
 
-## Import a new snapshot
+## Import spreadsheets from the admin
+
+For staff spreadsheet imports into **live MySQL**, open **`/admin`**. The SQL snapshot workflow below is separate.
+
+1. Set `ADMIN_IMPORT_PASSWORD` and sign in. Local development (`yarn dev`) accepts a short test password. If you set it in both `.env` and `.env.local`, the value in `.env.local` takes precedence. For production, set a random password of at least 16 characters and set `SITE_ORIGIN` to the site's HTTPS origin. Sessions last four hours. Sign-in is rate limited per server process.
+2. Choose a CSV or Excel workbook (`.xlsx` or `.xls`). The importer reads UTF-8, Windows-1252 and UTF-16 CSVs with a byte order mark for UTF-16. Use a header row and one row per product size. Select the relevant sheets, check Wings or Reserves for each, and review the suggested column mappings. You can select a different header row, map unfamiliar headings or skip columns. Confirm the units shown: wing weight is in **kg**, reserve weight in **grams**, loads in **kg**, volumes in **litres**, and prices in **GBP**. Files are read in the browser; only mapped data is used. Limits: 5 MB, 20 visible sheets, 128 columns, 2,000 data rows per import.
+3. Preview the rows. **Research missing fields** is optional. It sends the brand, model, size and requested field names to DigitalOcean Inference, calls its hosted web search, then extracts suggestions from cited passages. Existing values stay intact. If a size is missing, only model-level fields are researched. Each suggestion is labelled and links to its supporting excerpt; changing the product identity clears its unedited suggestions. Check the exact size, units and certification against the source. Unknown values stay blank; internal sale status and Flybubble selling prices are manual. You can stop research or keep editing after a service error.
+4. Edit the preview, select the rows to add, and choose **Add selected to MySQL**. Brand, model and size are required. New sizes and their model metadata/wing colourways are added in one transaction. Existing sizes (including duplicate rows in the file) are skipped; existing metadata is never overwritten. Conflicting non-empty model metadata stops the batch. The preview reports the result and keeps unselected rows available. A live catalogue refresh can take about a minute. Reloading or leaving the page discards the preview.
+
+Set these **encrypted runtime variables** on the gear app:
+
+| Variable | Purpose |
+| --- | --- |
+| `ADMIN_IMPORT_PASSWORD` | Staff sign-in; rotating it invalidates outstanding sessions. |
+| `DO_AI_KEY` | DigitalOcean model access key. Flybubble Ask uses this name too; configure the secret on this service separately. Optional for file-only imports. |
+| `DO_INFERENCE_MODEL` | Defaults to `deepseek-v4.1-flash-1017`. The key must allow this or another model supporting Responses with web search and Chat Completions with JSON output. |
+
+With `DATA_SOURCE=mysql`, imports use the catalogue's existing `DB_USER` and `DB_PASSWORD`. That account needs **SELECT and INSERT** on `WingsData`, `ReservesData`, `DSGeneric` and `DSColours`, plus **UPDATE on the `modelyear` and `shopurl` columns of `DSGeneric`** to fill empty model metadata. Snapshot mode supports preview and research without catalogue writes.
+
+**Research missing fields** also looks for a model photo on Flybubble. It checks the workbook's Flybubble product link or searches the shop by brand and model, then previews the exact match's featured image with its product-page link. Photo lookup works without a DigitalOcean key. All sizes of a model share the **Include photo for this model** checkbox. Unchecking it excludes the photo when you add selected rows.
+
+The first save with an approved photo creates the InnoDB table `gear_product_photos` using the same MySQL account (CREATE once, then SELECT and INSERT). The importer verifies the reviewed image still matches the shop listing and stores a copy and its source with the selected rows. Existing models can gain a photo even when their sizes already exist. Existing photos are preserved. The live catalogue serves the saved bytes from `/api/product-photos/<id>`; the bundled photos in `public/products` still work in both catalogue modes.
+
+Enable DigitalOcean's [Web Search feature preview](https://docs.digitalocean.com/products/inference/how-to/use-server-side-tools/use-web-search/) on the team that owns the key. Each eligible row uses one bounded search request and, when sources are available, one extraction request; these are billed by DigitalOcean. No direct OpenAI key or separate search service is required. A provider error leaves the preview available for manual import.
+
+## Refresh the bundled snapshot from SQL
 
 ```sh
 python scripts/import-snapshot.py /path/to/export.sql

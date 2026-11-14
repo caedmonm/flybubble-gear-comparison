@@ -1,0 +1,325 @@
+.imp {
+  min-height: 100vh;
+  background: #f3f5f1;
+  color: #203e37;
+}
+.imp output { display: block; }
+.imp-photo {display:flex;align-items:center;flex-wrap:wrap;gap:16px;background:#edf6fd;border-radius:6px;margin:12px 0;padding:12px;}
+.imp-photo img {object-fit:contain;width:144px;height:100px;background:white;}
+.imp-photo a {text-decoration:underline;}
+.imp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px max(5vw, 20px);
+  background: #203e37;
+  color: white;
+  gap: 12px;
+}
+.imp-header img {
+  width: 138px;
+  height: 35px;
+  object-fit: contain;
+}
+.imp-header div,
+.imp-actions,
+.imp-inline {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.imp-header button {
+  border-left: 1px solid #779089;
+  padding-left: 16px;
+}
+.imp-body {
+  max-width: 1250px;
+  margin: auto;
+  padding: 40px 24px 64px;
+}
+.imp h1,
+.imp h2,
+.imp h3,
+.imp p {
+  margin: 0;
+}
+.imp h1 {
+  font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin: 8px 0 12px;
+}
+.imp h2 {
+  font-size: 23px;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin: 6px 0;
+}
+.imp h3 {
+  font-size: 18px;
+  margin-top: 18px;
+}
+.imp p {
+  line-height: 1.55;
+  color: #51675f;
+  margin: 6px 0 14px;
+}
+.imp .imp-lead {
+  font-size: 17px;
+  margin-bottom: 24px;
+}
+.imp-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #47665b;
+}
+.imp-panel,
+.imp-sheet {
+  border: 1px solid #d7e0d7;
+  border-radius: 12px;
+  background: white;
+  padding: 22px;
+}
+.imp-panel + .imp-panel,
+.imp-review,
+.imp-commit {
+  margin-top: 16px;
+}
+.imp-login {
+  max-width: 420px;
+  margin-top: 22px;
+}
+.imp label:not(.imp-check) {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 0;
+}
+.imp input:not([type='checkbox']),
+.imp select {
+  border: 1px solid #adbbb4;
+  border-radius: 5px;
+  background: white;
+  color: #203e37;
+  padding: 8px 10px;
+  width: 100%;
+  min-width: 0;
+}
+.imp select {
+  max-width: 100%;
+}
+.imp .imp-upload {
+  background: #f5f8f5;
+  border: 1px dashed #94a99c;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 520px;
+}
+.imp .imp-upload input {
+  border: 0;
+  background: transparent;
+  padding: 2px;
+}
+.imp input::file-selector-button {
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid #bac8bf;
+  border-radius: 5px;
+  background: white;
+  padding: 6px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.imp-primary,
+.imp-secondary {
+  border-radius: 6px;
+  font-weight: 700;
+  padding: 10px 16px;
+}
+.imp-primary {
+  background: #255b4c;
+  color: white;
+  margin-top: 14px;
+}
+.imp-secondary {
+  background: #e5eee8;
+  color: #245645;
+  border: 1px solid #b9cbbf;
+}
+.imp-link,
+.imp-listhead button,
+.imp-cell a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.imp button:disabled {
+  opacity: 0.55;
+}
+.imp-sheets {
+  display: grid;
+  gap: 10px;
+}
+.imp-sheet {
+  border-radius: 8px;
+  padding: 15px;
+}
+.imp-check,
+.imp-listhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.imp-check {
+  font-weight: 700;
+}
+.imp input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: #255b4c;
+  flex-shrink: 0;
+}
+.imp-inline {
+  margin: 14px 0;
+}
+.imp summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.imp-review {
+  display: grid;
+  grid-template-columns: minmax(190px, 29%) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.imp-rowlist {
+  padding: 0;
+  overflow: hidden;
+  position: sticky;
+  top: 8px;
+}
+.imp-listhead {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 14px;
+  border-bottom: 1px solid #dae2dc;
+}
+.imp-scroll {
+  max-height: 70vh;
+  overflow: auto;
+}
+.imp-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  gap: 10px;
+  border-bottom: 1px solid #e6ece7;
+}
+.imp-row.active {
+  background: #e6efe9;
+}
+.imp-row button {
+  display: grid;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+  padding: 7px 0;
+  overflow-wrap: anywhere;
+}
+.imp-row small,
+.imp-origin {
+  color: #526b5e;
+}
+.imp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 14px;
+}
+.imp-cell {
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  min-width: 0;
+}
+.imp-cell.researched {
+  background: #edf6fd;
+  border-color: #bed9ed;
+}
+.imp-cell.researched .imp-origin,
+.imp-cell details {
+  color: #225879;
+}
+.imp-cell small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+}
+.imp-cell details {
+  margin-top: 5px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.imp-cell details p {
+  margin-bottom: 4px;
+}
+.imp-field-error {
+  color: #9a3c26;
+}
+.imp input[aria-invalid='true'] {
+  border-color: #b55e49;
+}
+.imp-commit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.imp-commit p,
+.imp-commit button {
+  margin: 0;
+}
+.imp-alert,
+.imp-note {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 14px 0;
+}
+.imp-alert {
+  background: #fbebe3;
+  color: #843c22;
+}
+.imp-note {
+  background: #e0efe5;
+  color: #214e3a;
+}
+@media (max-width: 760px) {
+  .imp-body {
+    padding: 24px 12px;
+  }
+  .imp-panel {
+    padding: 16px;
+  }
+  .imp-review {
+    grid-template-columns: 1fr;
+  }
+  .imp-rowlist {
+    position: static;
+    padding: 0;
+  }
+  .imp-scroll {
+    max-height: 210px;
+  }
+  .imp-header {
+    font-size: 12px;
+  }
+  .imp-header img {
+    width: 104px;
+  }
+  .imp-grid {
+    gap: 6px;
+  }
+}
